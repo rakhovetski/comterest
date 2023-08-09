@@ -91,8 +91,6 @@ class PortfolioProject(models.Model):
         return f'{self.user} - {self.title} - {self.formatted_date()}'
 
 
-
-
 class Team(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=5000, blank=True)
@@ -104,7 +102,6 @@ class Team(models.Model):
 
     def __str__(self):
         return self.title
-
 
 
 class ProfileTeam(models.Model):

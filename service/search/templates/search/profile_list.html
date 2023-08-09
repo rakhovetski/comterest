@@ -4,28 +4,28 @@
 {% block title %}Profile List{% endblock %}
 
 {% block content %}
-    {% if profiles %}
-        {% for profile in profiles %}
-            {% if profile.profile_image %}
-                <img src="{{ profile.profile_image.url }}" width="250" height="250" alt="{{ profile.user.username }}" >
-            {% else %}
-                <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
-            {% endif %}
-            <p>Username: {{ profile.user.username }}</p>
-            <p>Last name: {{ profile.user.last_name }}</p>
-            <p>First name: {{ profile.user.first_name }}</p>
-            <p>
+     {% for profile in page_obj %}
+        {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}" width="250" height="250" alt="{{ profile.user.username }}" >
+        {% else %}
+            <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
+        {% endif %}
+        <p>Username: {{ profile.user.username }}</p>
+        <p>Last name: {{ profile.user.last_name }}</p>
+        <p>First name: {{ profile.user.first_name }}</p>
+        <p>
             Roles: {% with profile.roles_by_profile as roles %}
                 {% for role in roles %}
-                    {{ role.name }}
-                {% endfor %}
+                {{ role.name }}
+               {% endfor %}
             {% endwith %}
-            </p>
-            <p>
-                Link: <a href="{% url 'account:profile' profile.user.pk %}">@{{ profile.user.username|lower }}</a>
-            </p>
-            <p>-------------------------------------------</p>
-            <br/>
-        {% endfor %}
-    {% endif %}
+        </p>
+        <p>
+            Link: <a href="{% url 'account:profile' profile.user.pk %}">@{{ profile.user.username|lower }}</a>
+        </p>
+        <p>-------------------------------------------</p>
+        <br/>
+    {% endfor %}
+
+    {% include 'search/page_paginator.html' %}
 {% endblock %}

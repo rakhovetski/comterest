@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.generic import ListView
+from django.core.paginator import Paginator
 from account.models import Profile, PortfolioProject, Role
 
 
@@ -15,7 +16,10 @@ def profile_list(request, filter_slug=None):
             profiles = Profile.objects.filter(user__portfolio_projects__role__slug=filter_slug)
         else:
             profiles = Profile.objects.exclude(user=request.user)
-        return render(request, 'search/profile_list.html', {'profiles': profiles})
+        paginator = Paginator(profiles, 7)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'search/profile_list.html', { 'page_obj': page_obj})
     else:
         messages.success(request, 'You must be logged in')
         return redirect('search:home')
