@@ -22,6 +22,7 @@ class Profile(models.Model):
                                      related_name='followed_by',
                                      symmetrical=False,
                                      blank=True)
+    profile_image = models.ImageField(null=True, blank=True, upload_to='images/profile_images/')
 
     class Meta:
         verbose_name = 'профиль'

@@ -4,27 +4,12 @@ from django.contrib.auth.models import User
 from .models import Profile, PortfolioProject, Role
 
 
-# class ProfileRegisterForm(forms.ModelForm):
-#     password = forms.CharField(label='Password', widget=forms.PasswordInput)
-#     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
-#
-#     class Meta:
-#         model = Profile
-#         fields = ['username', 'last_name', 'first_name',
-#                   'email', 'phone', 'description',
-#                   'date_of_birth', 'experience']
-#
-#     def clean_password2(self):
-#         cd = self.cleaned_data
-#         if cd['password'] != cd['password2']:
-#             raise forms.ValidationError('Password don\'t match.')
-#         return cd['password2']
-#
-#     def clean_email(self):
-#         clean_email = self.cleaned_data['email']
-#         if Profile.objects.filter(email=clean_email).exists():
-#             raise forms.ValidationError('Email already in use')
-#         return clean_email
+class ProfilePicForm(forms.ModelForm):
+    profile_image = forms.ImageField(label='Profile Picture')
+
+    class Meta:
+        model = Profile
+        fields = ('profile_image', )
 
 
 class LoginForm(forms.Form):

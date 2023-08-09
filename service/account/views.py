@@ -1,6 +1,6 @@
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect, reverse
-from account.forms import PortfolioProjectForm, RegisterForm
+from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic.detail import DetailView
@@ -16,9 +16,6 @@ def register_user(request):
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
-            # first_name = form.cleaned_data['first_name']
-            # last_name = form.cleaned_data['last_name']
-            # email = form.cleaned_data['email']
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -31,15 +28,26 @@ def register_user(request):
 def edit_user(request):
     if request.user.is_authenticated:
         current_user = User.objects.get(id=request.user.id)
-        form = RegisterForm(request.POST or None, instance=current_user)
-        if form.is_valid():
-            form.save()
+        profile_user = Profile.objects.get(user__id=request.user.id)
+
+        user_form = RegisterForm(request.POST or None, request.FILES or None, instance=current_user)
+        profile_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile_user)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+
+            username = user_form.cleaned_data['username']
+            password = user_form.cleaned_data['password1']
+
+            user = authenticate(request, username=username, password=password)
+
+            login(request, user)
+
             messages.success(request, 'Your Profile Has Been Updated')
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            login(username, password)
             return redirect('account:profile', pk=current_user.pk)
-        return render(request, 'account/profile/edit_profile.html', {'form': form})
+        return render(request, 'account/profile/edit_profile.html', {'user_form': user_form,
+                                                                     'profile_form': profile_form})
     else:
         messages.success(request, 'You must be logged in')
         return redirect('search:home')

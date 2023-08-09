@@ -1,10 +1,18 @@
 {% extends "search/base.html" %}
+{% load static %}
 
 {% block title %}Account{% endblock %}
 
 {% block content %}
 
     <h1>@{{ profile.user.username }}`s Profile</h1>
+
+    {% if profile.profile_image %}
+        <img src="{{ profile.profile_image.url }}" width="250" height="250" alt="{{ profile.user.username }}" >
+    {% else %}
+        <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
+    {% endif %}
+    <br/>
 
     <strong>Follows: </strong>
     {% for following in profile.follows.all %}

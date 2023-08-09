@@ -6,7 +6,11 @@
 {% block content %}
     {% if profiles %}
         {% for profile in profiles %}
-            <img src="{% static 'search/images/no_image.png' %}">
+            {% if profile.profile_image %}
+                <img src="{{ profile.profile_image.url }}" width="250" height="250" alt="{{ profile.user.username }}" >
+            {% else %}
+                <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
+            {% endif %}
             <p>Username: {{ profile.user.username }}</p>
             <p>Last name: {{ profile.user.last_name }}</p>
             <p>First name: {{ profile.user.first_name }}</p>
