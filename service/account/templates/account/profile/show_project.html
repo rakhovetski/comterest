@@ -1,0 +1,19 @@
+{% extends "search/base.html" %}
+
+{% block title %}Project Detail{% endblock %}
+
+{% block content %}
+    <h1>Title: {{ project.title }}</h1>
+    <p>
+        Description: {{ project.description }}
+    </p>
+    <p>
+        Roles:
+        {% for role in project.role.all %}
+            {{ role }}
+        {% endfor %}
+    </p>
+    <p>
+        Created at: {{ project.formatted_date }}
+    </p>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "search/base.html" %}
+
+{% block title %}Sign out{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url 'action:logout' %}">
+        {% csrf_token %}
+        <label for="confirm_logout">Are you really want to sign out</label>
+        <input type="checkbox" name="confirm_logout" id="confirm_logout">
+        <button type="submit">
+            Sign out
+        </button>
+    </form>
+{% endblock %}

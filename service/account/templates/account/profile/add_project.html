@@ -1,0 +1,12 @@
+{% extends "search/base.html" %}
+
+{% block title %}Add projects{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ project_form.as_p }}
+
+        <button type="submit">Post Project</button>
+    </form>
+{% endblock %}

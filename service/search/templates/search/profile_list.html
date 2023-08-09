@@ -1,0 +1,27 @@
+{% extends "search/base.html" %}
+{% load static %}
+
+{% block title %}Profile List{% endblock %}
+
+{% block content %}
+    {% if profiles %}
+        {% for profile in profiles %}
+            <img src="{% static 'search/images/no_image.png' %}">
+            <p>Username: {{ profile.user.username }}</p>
+            <p>Last name: {{ profile.user.last_name }}</p>
+            <p>First name: {{ profile.user.first_name }}</p>
+            <p>
+            Roles: {% with profile.roles_by_profile as roles %}
+                {% for role in roles %}
+                    {{ role.name }}
+                {% endfor %}
+            {% endwith %}
+            </p>
+            <p>
+                Link: <a href="{% url 'account:profile' profile.user.pk %}">@{{ profile.user.username|lower }}</a>
+            </p>
+            <p>-------------------------------------------</p>
+            <br/>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

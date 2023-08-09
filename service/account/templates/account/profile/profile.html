@@ -1,0 +1,60 @@
+{% extends "search/base.html" %}
+
+{% block title %}Account{% endblock %}
+
+{% block content %}
+
+    <h1>@{{ profile.user.username }}`s Profile</h1>
+
+    <strong>Follows: </strong>
+    {% for following in profile.follows.all %}
+        <a href="{% url 'account:profile' following.user.id %}">
+            {% if profile.user.id != request.user.id and following.user.id != profile.user.id %}
+                @{{ following }}
+            {% endif %}
+        </a><br/>
+    {% endfor %}
+    <br/>
+
+    <strong>Followed By: </strong>
+    {% for following in profile.followed_by.all %}
+        <a href="{% url 'account:profile' following.user.id %}">
+            {% if profile.user.id != request.user.id and following.user.id != profile.user.id%}
+                @{{ following }}
+            {% endif %}
+        </a><br/>
+    {% endfor %}
+    <br/>
+
+    <form method="post">
+        {% csrf_token %}
+        {% if profile.user.id != request.user.id %}
+            {% if profile in user.profile.follows.all %}
+                <button name="follow" value="unfollow" type="submit">
+                    Unfollow @{{ profile.user.username|lower }}
+                </button>
+            {% else %}
+                <button name="follow" value="follow" type="submit">
+                    Follow @{{ profile.user.username|lower }}
+                </button>
+            {% endif %}
+        {% endif %}
+    </form>
+
+    {% if request.user.id == profile.user.id %}
+        <a href="{% url 'account:edit_user' %}">Edit Profile</a>
+        <br/>
+        <br/>
+        {% if projects %}
+            {% for project in projects %}
+                <p>
+                <a href="{% url 'account:show_project' project.pk %}">{{ project.title }}</a>
+                </p>
+            {% endfor %}
+        {% endif %}
+        <br/>
+        <a href="{% url 'account:add_project' %}">Add Your Projects</a>
+    {% endif %}
+    <br/>
+
+{% endblock %}

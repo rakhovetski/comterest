@@ -1,0 +1,27 @@
+{% extends "search/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <h1>Login in your account</h1>
+
+    {% if form.errors %}
+        <p>
+            Your username and password didn't match.
+            Please try again.
+        </p>
+    {% else %}
+        <p>Please login using the following form</p>
+    {% endif %}
+
+    <form method="post" action="{% url 'account:login'%}">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Enter Your Username">
+        <input type="password" name="password" placeholder="Enter Your Password">
+        <button type="submit">Submit</button>
+    </form>
+
+    <p>If you don't have an account
+        You can <a href="{% url 'account:register' %}">Sign up</a>
+    </p>
+{% endblock %}

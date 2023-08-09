@@ -1,0 +1,16 @@
+{% extends "search/base.html" %}
+
+{% block title %}All Roles{% endblock %}
+
+{% block content %}
+
+    {% for role in roles %}
+        <p>
+            <a href="{% url 'search:profile_list' role.slug %}">{{ role }}</a>
+        </p>
+    {% endfor %}
+
+{% endblock %}
+
+
+

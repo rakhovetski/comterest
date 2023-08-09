@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+    {% block title %}{% endblock%}
+    </title>
+</head>
+<body>
+    <div id="header">
+        <span class="logo"></span>
+        <span>
+            <p>Search</p>
+        </span>
+        <span>
+            <a href="{% url 'search:profile_list' %}">Profile List</a>
+        </span>
+        <span>
+            <a href="{% url 'search:roles_list' %}">Roles List</a>
+        </span>
+        <span class="user">
+            {% if request.user.is_authenticated %}
+                Hello {{ request.user.first_name }}
+                <a href="{% url 'account:profile' request.user.id %}">My Profile</a>
+                <a href="{% url 'account:logout' %}">Sign out</a>
+            {% else %}
+                <a href="{% url 'account:login' %}">Sign in</a>
+            {% endif %}
+        </span>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <strong>{{ message }}</strong>
+        {% endfor %}
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

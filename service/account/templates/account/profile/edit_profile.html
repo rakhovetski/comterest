@@ -1,0 +1,15 @@
+{% extends "search/base.html" %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+    <h1>Edit Profile</h1>
+
+    <p>Please sign up using the following form</p>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Edit User</button>
+    </form>
+{% endblock %}
