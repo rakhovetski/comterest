@@ -50,29 +50,46 @@
     </form>
 
     {% if request.user.id == profile.user.id %}
-        <a href="{% url 'account:edit_user' %}">Edit Profile</a>
-        <br/>
-        <br/>
+        <p>
+            <a href="{% url 'account:edit_user' %}">Edit Profile</a>
+        </p>
+    {% endif %}
+    <p>----------------------------------------</p>
         {% if projects %}
             {% for project in projects %}
                 <p>
-                <a href="{% url 'account:show_project' project.pk %}">{{ project.title }}</a>
+                    <a href="{% url 'account:show_project' project.pk %}">{{ project.title }}</a>
+                    {% if request.user.id == profile.user.id %}
+                        <a href="{% url 'account:edit_project' project.pk %}">Edit Project</a>
+                    {% endif %}
+
+                </p>
+                <p>
+                    {{ project.description|truncatewords:8 }}
+                </p>
+                <p>
+                    ----------------------------------------
                 </p>
             {% endfor %}
         {% endif %}
-        <br/>
-        <a href="{% url 'account:add_project' %}">Add Your Projects</a>
+        {% if request.user.id == profile.user.id %}
+            <a href="{% url 'account:add_project' %}">Add Your Projects</a>
+        {% endif %}
         <br/>
 
         {% for team in teams %}
             <p>
-                <a href="{% url 'account:show_team' team.pk %}">{{ team }}</a>
+                <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>
+                <a href="{% url 'account:edit_team' team.pk %}">Edit Team</a>
+                <p>
+                    {{ team.description|truncatewords:8 }}
+                </p>
             </p>
         {% endfor %}
         <br/>
-        <a href="{% url 'account:add_team' %}">Create Your Teams</a>
-
-    {% endif %}
+        {% if request.user.id == profile.user.id %}
+            <a href="{% url 'account:add_team' %}">Create Your Teams</a>
+        {% endif %}
     <br/>
 
 

@@ -39,6 +39,14 @@ class PortfolioProjectForm(forms.ModelForm):
         exclude = ('user',)
 
 
+class TeamPicForm(forms.ModelForm):
+    image = forms.ImageField(label='Team Picture')
+
+    class Meta:
+        model = Team
+        fields = ('image', )
+
+
 class TeamForm(forms.ModelForm):
     title = forms.CharField(required=True,
                             widget=forms.widgets.Textarea(

@@ -111,14 +111,31 @@ def add_project(request):
             if project_form.is_valid():
                 project = project_form.save(commit=False)
                 project.user = request.user
-                project_form.save_m2m()
                 project.save()
+                project_form.save_m2m()
                 return redirect('account:profile', pk=request.user.pk)
         return render(request,
                       'account/profile/add_project.html',
                       {'project_form': project_form})
     else:
         messages.success(request, 'You must logged in')
+        return redirect('search:home')
+
+
+def edit_project(request, pk):
+    if request.user.is_authenticated:
+        project = PortfolioProject.objects.get(id=pk)
+
+        project_form = PortfolioProjectForm(request.POST or None, instance=project)
+
+        if project_form.is_valid():
+            project_form.save()
+
+            messages.success(request, 'Your Project Has Been Updated')
+            return redirect('account:profile', pk=project.pk)
+        return render(request, 'account/profile/edit_project.html', {'project_form': project_form})
+    else:
+        messages.success(request, 'You must be logged in')
         return redirect('search:home')
 
 
@@ -142,6 +159,23 @@ def add_team(request):
                       {'team_form': team_form})
     else:
         messages.success(request, 'You must logged in')
+        return redirect('search:home')
+
+
+def edit_team(request, pk):
+    if request.user.is_authenticated:
+        team = Team.objects.get(id=pk)
+
+        team_form = TeamForm(request.POST or None, instance=team)
+
+        if team_form.is_valid():
+            team_form.save()
+
+            messages.success(request, 'Your Team Has Been Updated')
+            return redirect('account:profile', pk=request.user.pk)
+        return render(request, 'account/profile/edit_team.html', {'team_form': team_form})
+    else:
+        messages.success(request, 'You must be logged in')
         return redirect('search:home')
 
 

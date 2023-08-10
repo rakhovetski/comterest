@@ -15,7 +15,7 @@ class Role(models.Model):
         return self.name
 
 
-ROLE_CHOICES = [(role.id, role.name) for role in Role.objects.all()]
+# ROLE_CHOICES = [(role.id, role.name) for role in Role.objects.all()]
 
 
 class ProfileManager(UserManager):
@@ -66,7 +66,8 @@ class Team(models.Model):
     description = models.TextField(max_length=5000, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     profile = models.ManyToManyField(Profile, related_name='teams')
-    role = models.ManyToManyField(Role, related_name='teams', choices=ROLE_CHOICES)
+    role = models.ManyToManyField(Role, related_name='teams')
+    image = models.ImageField(blank=True, null=True, upload_to='images/team_images/')
 
     class Meta:
         verbose_name = 'команда'
@@ -93,7 +94,7 @@ class PortfolioProject(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=5000, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    role = models.ManyToManyField(Role, related_name='portfolio_roles', choices=ROLE_CHOICES)
+    role = models.ManyToManyField(Role, related_name='portfolio_roles')
 
     class Meta:
         verbose_name = 'проект в портфолио'

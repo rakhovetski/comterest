@@ -5,8 +5,6 @@
 {% block content %}
     <h1>Edit Profile</h1>
 
-    <p>Please sign up using the following form</p>
-
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {{ user_form.as_p }}
