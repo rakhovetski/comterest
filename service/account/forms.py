@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, PortfolioProject, Role
+from .models import Profile, PortfolioProject, Role, Team
 
 
 class ProfilePicForm(forms.ModelForm):
@@ -9,7 +9,7 @@ class ProfilePicForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('profile_image', )
+        fields = ('profile_image',)
 
 
 class LoginForm(forms.Form):
@@ -27,7 +27,7 @@ class PortfolioProjectForm(forms.ModelForm):
     description = forms.CharField(required=True,
                                   widget=forms.widgets.Textarea(
                                       attrs={
-                                          'placeholder': 'Enter Description Title'
+                                          'placeholder': 'Enter Description'
                                       },
                                   ), label='')
     role = forms.ModelMultipleChoiceField(queryset=Role.objects.all(),
@@ -36,7 +36,32 @@ class PortfolioProjectForm(forms.ModelForm):
 
     class Meta:
         model = PortfolioProject
-        exclude = ('user', )
+        exclude = ('user',)
+
+
+class TeamForm(forms.ModelForm):
+    title = forms.CharField(required=True,
+                            widget=forms.widgets.Textarea(
+                                attrs={
+                                    'placeholder': 'Enter Team Name',
+                                },
+                            ), label='')
+    description = forms.CharField(required=True,
+                                  widget=forms.widgets.Textarea(
+                                      attrs={
+                                          'placeholder': 'Enter Description'
+                                      },
+                                  ), label='')
+    role = forms.ModelMultipleChoiceField(queryset=Role.objects.all(),
+                                          widget=forms.CheckboxSelectMultiple,
+                                          required=True)
+    profile = forms.ModelMultipleChoiceField(queryset=Profile.objects.all(),
+                                             widget=forms.CheckboxSelectMultiple,
+                                             required=True)
+
+    class Meta:
+        model = Team
+        fields = ('title', 'description', 'role', 'profile')
 
 
 class RegisterForm(UserCreationForm):

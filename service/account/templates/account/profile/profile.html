@@ -62,7 +62,23 @@
         {% endif %}
         <br/>
         <a href="{% url 'account:add_project' %}">Add Your Projects</a>
+        <br/>
+
+        {% for team in teams %}
+            <p>
+                <a href="{% url 'account:show_team' team.pk %}">{{ team }}</a>
+            </p>
+        {% endfor %}
+        <br/>
+        <a href="{% url 'account:add_team' %}">Create Your Teams</a>
+
     {% endif %}
     <br/>
+
+
+
+    {% if request.user.id == profile.user.id %}
+
+    {% endif %}
 
 {% endblock %}

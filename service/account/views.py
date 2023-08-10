@@ -1,11 +1,11 @@
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect, reverse
-from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm
+from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm, TeamForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic.detail import DetailView
 
-from account.models import Profile, PortfolioProject
+from account.models import Profile, PortfolioProject, Team
 
 
 def register_user(request):
@@ -82,6 +82,7 @@ def show_profile(request, pk):
     if request.user.is_authenticated:
         profile = Profile.objects.get(user_id=pk)
         projects = PortfolioProject.objects.filter(user_id=pk).order_by('-created_at')
+        teams = Team.objects.filter(profile__id=profile.pk)
 
         if request.method == 'POST':
             current_user_profile = request.user.profile
@@ -94,7 +95,8 @@ def show_profile(request, pk):
             current_user_profile.save()
         context = {
             'profile': profile,
-            'projects': projects
+            'projects': projects,
+            'teams': teams
         }
         return render(request, 'account/profile/profile.html', context=context)
     else:
@@ -109,8 +111,8 @@ def add_project(request):
             if project_form.is_valid():
                 project = project_form.save(commit=False)
                 project.user = request.user
-                project.save()
                 project_form.save_m2m()
+                project.save()
                 return redirect('account:profile', pk=request.user.pk)
         return render(request,
                       'account/profile/add_project.html',
@@ -124,3 +126,27 @@ class PortfolioProjectDetailView(DetailView):
     model = PortfolioProject
     template_name = 'account/profile/show_project.html'
     context_object_name = 'project'
+
+
+def add_team(request):
+    if request.user.is_authenticated:
+        team_form = TeamForm(request.POST or None)
+        if request.method == 'POST':
+            if team_form.is_valid():
+                project = team_form.save(commit=False)
+                project.save()
+                team_form.save_m2m()
+                return redirect('account:profile', pk=request.user.pk)
+        return render(request,
+                      'account/profile/add_team.html',
+                      {'team_form': team_form})
+    else:
+        messages.success(request, 'You must logged in')
+        return redirect('search:home')
+
+
+class TeamDetailView(DetailView):
+    model = Team
+    template_name = 'account/profile/show_team.html'
+    context_object_name = 'team'
+

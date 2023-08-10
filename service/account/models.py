@@ -3,6 +3,21 @@ from django.contrib.auth.models import User, UserManager
 from django.db.models.signals import post_save
 
 
+class Role(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.CharField(max_length=50)
+
+    class Meta:
+        verbose_name = 'роль'
+        verbose_name_plural = 'роли'
+
+    def __str__(self):
+        return self.name
+
+
+ROLE_CHOICES = [(role.id, role.name) for role in Role.objects.all()]
+
+
 class ProfileManager(UserManager):
     def create_superuser(self, username, email=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -46,6 +61,22 @@ class Profile(models.Model):
     # objects = ProfileManager()
 
 
+class Team(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(max_length=5000, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    profile = models.ManyToManyField(Profile, related_name='teams')
+    role = models.ManyToManyField(Role, related_name='teams', choices=ROLE_CHOICES)
+
+    class Meta:
+        verbose_name = 'команда'
+        verbose_name_plural = 'команды'
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
+
 def create_profile(sender, instance, created, **kwargs):
     if created:
         user_profile = Profile(user=instance)
@@ -55,21 +86,6 @@ def create_profile(sender, instance, created, **kwargs):
 
 
 post_save.connect(create_profile, sender=User)
-
-
-class Role(models.Model):
-    name = models.CharField(max_length=50)
-    slug = models.CharField(max_length=50)
-
-    class Meta:
-        verbose_name = 'роль'
-        verbose_name_plural = 'роли'
-
-    def __str__(self):
-        return self.name
-
-
-ROLE_CHOICES = [(role.id, role.name) for role in Role.objects.all()]
 
 
 class PortfolioProject(models.Model):
@@ -91,25 +107,5 @@ class PortfolioProject(models.Model):
         return f'{self.user} - {self.title} - {self.formatted_date()}'
 
 
-class Team(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField(max_length=5000, blank=True)
-
-    class Meta:
-        verbose_name = 'команда'
-        verbose_name_plural = 'команды'
-        ordering = ['title']
-
-    def __str__(self):
-        return self.title
-
-
-class ProfileTeam(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='profile_teams')
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='profile_teams')
-    # role = models.ManyToManyField(Role, related_name='portfolio_team_roles', choices=ROLE_CHOICES)
-
-    def __str__(self):
-        return f'{self.profile}: {self.team}: {self.role}'
 
 

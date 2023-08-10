@@ -1,6 +1,6 @@
 from django.urls import path
 from account.views import register_user, edit_user, user_login, show_profile, user_logout, add_project, \
-    PortfolioProjectDetailView
+    PortfolioProjectDetailView, add_team, TeamDetailView
 
 app_name = 'account'
 
@@ -12,4 +12,6 @@ urlpatterns = [
     path('profile/edit/', edit_user, name='edit_user'),
     path('profile/add_project', add_project, name='add_project'),
     path('profile/show_project/<int:pk>', PortfolioProjectDetailView.as_view(), name='show_project'),
+    path('profile/add_team', add_team, name='add_team'),
+    path('profile/show_team/<int:pk>', TeamDetailView.as_view(), name='show_team'),
 ]

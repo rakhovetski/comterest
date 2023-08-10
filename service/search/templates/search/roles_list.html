@@ -6,7 +6,7 @@
 
     {% for role in roles %}
         <p>
-            <a href="{% url 'search:profile_list' role.slug %}">{{ role }}</a>
+            <a href="{% url 'search:profile_list' team.pk %}">{{ team.title }}</a>
         </p>
     {% endfor %}
 

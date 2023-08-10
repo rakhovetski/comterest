@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
-from account.models import Profile, PortfolioProject, Role, ProfileTeam, Team
+from account.models import Profile, PortfolioProject, Role, Team
 
 
 admin.site.unregister(Group)
@@ -27,11 +27,7 @@ admin.site.register(PortfolioProject)
 #     model = PortfolioProject
 #     extra = 1
 #
-#
-# class ProfileTeamInline(admin.StackedInline):
-#     model = ProfileTeam
-#     extra = 1
-#
+
 #
 # @admin.register(Profile)
 # class ProfileAdmin(admin.ModelAdmin):
@@ -40,19 +36,17 @@ admin.site.register(PortfolioProject)
 #     search_fields = ['phone', 'email', 'last_name']
 #     inlines = [PortfolioProjectInline, ProfileTeamInline]
 #
-#
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     list_display = ['name', ]
     prepopulated_fields = {'slug': ('name',)}
-#
-#
-# @admin.register(Team)
-# class TeamAdmin(admin.ModelAdmin):
-#     list_display = ['title', ]
-#     inlines = [ProfileTeamInline]
-#
-#
+
+
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
+    list_display = ['title', ]
+
+
 # @admin.register(ProfileTeam)
 # class ProfileTeamAdmin(admin.ModelAdmin):
 #     list_display = ['profile', 'team']

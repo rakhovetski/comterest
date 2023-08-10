@@ -1,0 +1,25 @@
+{% extends "search/base.html" %}
+
+{% block title %}Team Detail{% endblock %}
+
+{% block content %}
+    <h1>{{ team.title }}</h1>
+    <p>{{ team.description }}</p>
+    <p>Teammates :</p>
+    {% for profile in team.profile.all %}
+        <p>
+            <a href="{% url 'account:profile' profile.pk %}">{{ profile.user.username }}</a>
+        </p>
+    {% endfor %}
+    <p>---------------------------------------------</p>
+    <p>Roles: </p>
+    {% for role in team.role.all %}
+        <p>
+            <a href="{% url 'search:profile_list' role.slug %}">{{ role.name }}</a>
+        </p>
+    {% endfor %}
+    <p>---------------------------------------------</p>
+    <p>
+        {{ team.created_at }}
+    </p>
+{% endblock %}

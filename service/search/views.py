@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.generic import ListView
 from django.core.paginator import Paginator
-from account.models import Profile, PortfolioProject, Role
+from account.models import Profile, PortfolioProject, Role, Team
 
 
 def home(request):
@@ -19,10 +19,22 @@ def profile_list(request, filter_slug=None):
         paginator = Paginator(profiles, 7)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        return render(request, 'search/profile_list.html', { 'page_obj': page_obj})
+        return render(request, 'search/profiles_list.html', {'page_obj': page_obj})
     else:
         messages.success(request, 'You must be logged in')
         return redirect('search:home')
+
+
+def team_list(request, pk=None):
+    if request.user.is_authenticated:
+        if pk:
+            teams = Team.objects.filter(pk=pk)
+        else:
+            teams = Team.objects.all()
+        paginator = Paginator(teams, 7)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'search/teams_list.html', {'page_obj': page_obj})
 
 
 class RoleListView(ListView):

@@ -10,13 +10,16 @@
     <div id="header">
         <span class="logo"></span>
         <span>
-            <p>Search</p>
+            Search
         </span>
         <span>
-            <a href="{% url 'search:profile_list' %}">Profile List</a>
+            <a href="{% url 'search:profile_list' %}">Profiles</a>
         </span>
         <span>
-            <a href="{% url 'search:roles_list' %}">Roles List</a>
+            <a href="{% url 'search:roles_list' %}">Roles</a>
+        </span>
+        <span>
+            <a href="{% url 'search:teams' %}">Teams</a>
         </span>
         <span class="user">
             {% if request.user.is_authenticated %}

@@ -1,0 +1,21 @@
+{% extends "search/base.html" %}
+
+{% block title %}All Teams{% endblock %}
+
+{% block content %}
+    {% for team in page_obj %}
+        <p>
+            <a href="{% url 'search:teams' team.pk %}">{{ team.title }}</a>
+        </p>
+        <p>
+            {{ team.description|truncatewords:15 }}
+        </p>
+        <p>----------------------------------------------</p>
+    {% endfor %}
+
+    {% include 'search/page_paginator.html' %}
+
+{% endblock %}
+
+
+

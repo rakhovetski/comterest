@@ -1,0 +1,13 @@
+{% extends "search/base.html" %}
+
+{% block title %}Create Team{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ team_form.as_p }}
+
+        <button type="submit">Create Team</button>
+    </form>
+
+{% endblock %}
