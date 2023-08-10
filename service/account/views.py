@@ -1,6 +1,6 @@
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect, reverse
-from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm, TeamForm
+from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm, TeamForm, TeamPicForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic.detail import DetailView
@@ -166,14 +166,17 @@ def edit_team(request, pk):
     if request.user.is_authenticated:
         team = Team.objects.get(id=pk)
 
-        team_form = TeamForm(request.POST or None, instance=team)
+        team_form = TeamForm(request.POST or None, request.FILES or None, instance=team)
+        team_pic_form = TeamPicForm(request.POST or None, request.FILES or None, instance=team)
 
-        if team_form.is_valid():
+        if team_form.is_valid() and team_pic_form.is_valid():
             team_form.save()
+            team_pic_form.save()
 
             messages.success(request, 'Your Team Has Been Updated')
             return redirect('account:profile', pk=request.user.pk)
-        return render(request, 'account/profile/edit_team.html', {'team_form': team_form})
+        return render(request, 'account/profile/edit_team.html', {'team_form': team_form,
+                                                                  'team_pic_form': team_pic_form})
     else:
         messages.success(request, 'You must be logged in')
         return redirect('search:home')

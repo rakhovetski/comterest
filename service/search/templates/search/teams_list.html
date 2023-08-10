@@ -1,10 +1,17 @@
 {% extends "search/base.html" %}
+{% load static %}
 
 {% block title %}All Teams{% endblock %}
 
 {% block content %}
     {% for team in page_obj %}
+        {% if team.image %}
+            <img src="{{ team.image.url }}" width="250" height="250" alt="{{ team.title }}" >
+        {% else %}
+            <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ team.title }}">
+        {% endif %}
         <p>
+            <img src="">
             <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>
         </p>
         <p>

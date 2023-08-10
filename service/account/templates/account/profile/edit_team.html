@@ -5,9 +5,11 @@
 {% block content %}
     <h1>Edit Team</h1>
 
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {{ team_form.as_p }}
+        <br/>
+        {{ team_pic_form.as_p }}
         <button type="submit">Edit Team</button>
     </form>
 {% endblock %}
