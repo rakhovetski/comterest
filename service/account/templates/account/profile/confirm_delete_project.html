@@ -1,0 +1,16 @@
+{% extends "search/base.html" %}
+
+{% block title %}Delete Project{% endblock %}
+
+{% block content %}
+    <h3>
+        Are You Sure You Want To Delete The Project?
+    </h3>
+
+    <form method="post" action="{% url 'account:delete_project' pk %}">
+        {% csrf_token %}
+        <p>Delete Project</p>
+        <input type="checkbox" name="confirm_delete">
+        <button type="submit">Delete</button>
+    </form>
+{% endblock %}

@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.generic import ListView
 from django.core.paginator import Paginator
-from account.models import Profile, PortfolioProject, Role, Team
+from account.models import Profile, Role, Team
+from django.contrib.auth.models import User
 
 
 def home(request):
@@ -47,3 +48,15 @@ def validate_user_authenticated(request):
     if not request.user.is_authenticated:
         messages.success(request, 'You must be logged in')
         return redirect('search:home')
+
+
+def search(request):
+    if request.method == 'POST':
+        search = request.POST['search']
+        searched = User.objects.filter(username__contains=search)
+        return render(request,
+                      'search/search.html',
+                      {'search': search,
+                       'searched': searched})
+    return render(request,
+                  'search/search.html', {})

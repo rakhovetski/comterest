@@ -40,7 +40,7 @@ class PortfolioProjectForm(forms.ModelForm):
 
 
 class TeamPicForm(forms.ModelForm):
-    image = forms.ImageField(label='Team Picture')
+    image = forms.ImageField(label='Team Picture', required=False)
 
     class Meta:
         model = Team

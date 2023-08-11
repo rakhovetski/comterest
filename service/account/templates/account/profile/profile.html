@@ -61,6 +61,7 @@
                     <a href="{% url 'account:show_project' project.pk %}">{{ project.title }}</a>
                     {% if request.user.id == profile.user.id %}
                         <a href="{% url 'account:edit_project' project.pk %}">Edit Project</a>
+                        <a href="{% url 'account:delete_project' project.pk %}">Delete Project</a>
                     {% endif %}
 
                 </p>
@@ -80,7 +81,10 @@
         {% for team in teams %}
             <p>
                 <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>
-                <a href="{% url 'account:edit_team' team.pk %}">Edit Team</a>
+                {% if request.user.id == profile.user.id %}
+                    <a href="{% url 'account:edit_team' team.pk %}">Edit Team</a>
+                    <a href="{% url 'account:delete_team' team.pk %}">Delete Team</a>
+                {% endif %}
                 <p>
                     {{ team.description|truncatewords:8 }}
                 </p>

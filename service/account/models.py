@@ -15,9 +15,6 @@ class Role(models.Model):
         return self.name
 
 
-# ROLE_CHOICES = [(role.id, role.name) for role in Role.objects.all()]
-
-
 class ProfileManager(UserManager):
     def create_superuser(self, username, email=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -30,7 +27,7 @@ class ProfileManager(UserManager):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # date_of_birth = models.DateField()
-    # experience = models.PositiveIntegerField(null=True, blank=True)
+    experience = models.PositiveIntegerField(null=True, blank=True, default=0)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     follows = models.ManyToManyField('self',
@@ -67,6 +64,7 @@ class Team(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     profile = models.ManyToManyField(Profile, related_name='teams')
     role = models.ManyToManyField(Role, related_name='teams')
+    owner = models.ForeignKey(Profile, related_name='owned_teams', on_delete=models.PROTECT, default=None)
     image = models.ImageField(blank=True, null=True, upload_to='images/team_images/')
 
     class Meta:

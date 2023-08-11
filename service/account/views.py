@@ -1,5 +1,5 @@
 from django.contrib.auth import login, authenticate, logout
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm, TeamForm, TeamPicForm
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -123,20 +123,45 @@ def add_project(request):
 
 
 def edit_project(request, pk):
-    if request.user.is_authenticated:
-        project = PortfolioProject.objects.get(id=pk)
+    project = get_object_or_404(PortfolioProject, pk=pk)
+    project_form = PortfolioProjectForm(request.POST or None, instance=project)
 
-        project_form = PortfolioProjectForm(request.POST or None, instance=project)
-
-        if project_form.is_valid():
-            project_form.save()
-
-            messages.success(request, 'Your Project Has Been Updated')
-            return redirect('account:profile', pk=project.pk)
-        return render(request, 'account/profile/edit_project.html', {'project_form': project_form})
-    else:
-        messages.success(request, 'You must be logged in')
+    if request.user.id != project.user.id:
+        messages.success(request, 'You Can\'t Edit That Project!')
         return redirect('search:home')
+
+    if project_form.is_valid():
+        project_form.save()
+        messages.success(request, 'Your Project Has Been Updated')
+        return redirect('account:profile', pk=request.user.pk)
+    return render(request, 'account/profile/edit_project.html', {'project_form': project_form})
+
+
+def delete_project(request, pk):
+    project = get_object_or_404(PortfolioProject, pk=pk)
+
+    if not request.user.is_authenticated:
+        messages.success(request, 'You must logged in')
+        return redirect('search:home')
+
+    if request.method == 'POST':
+        if request.user.id == project.user.id:
+
+            confirm_delete = request.POST.get('confirm_delete')
+
+            if confirm_delete:
+                project.delete()
+                messages.success(request, 'Your Project Has Been Deleted')
+                return redirect('account:profile', pk=request.user.pk)
+            else:
+                messages.success(request, 'If you want to delete the project, you need to check the box')
+                return redirect('account:delete_project', pk=pk)
+        else:
+            messages.success(request, 'You Can\'t Delete That Project!')
+            return redirect('search:home')
+    return render(request,
+                  'account/profile/confirm_delete_project.html',
+                  {'pk': pk})
 
 
 class PortfolioProjectDetailView(DetailView):
@@ -150,8 +175,10 @@ def add_team(request):
         team_form = TeamForm(request.POST or None)
         if request.method == 'POST':
             if team_form.is_valid():
-                project = team_form.save(commit=False)
-                project.save()
+                team = team_form.save(commit=False)
+                profile = Profile.objects.get(user__id=request.user.id)
+                team.owner = profile
+                team.save()
                 team_form.save_m2m()
                 return redirect('account:profile', pk=request.user.pk)
         return render(request,
@@ -164,15 +191,24 @@ def add_team(request):
 
 def edit_team(request, pk):
     if request.user.is_authenticated:
-        team = Team.objects.get(id=pk)
+        team = get_object_or_404(Team, id=pk)
+
+        if request.user.id != team.owner.id:
+            messages.success(request, 'You Can\'t Edit That Team!')
+            return redirect('search:home')
 
         team_form = TeamForm(request.POST or None, request.FILES or None, instance=team)
-        team_pic_form = TeamPicForm(request.POST or None, request.FILES or None, instance=team)
+        team_pic_form = TeamPicForm(request.POST or None, request.FILES or None)
 
         if team_form.is_valid() and team_pic_form.is_valid():
-            team_form.save()
-            team_pic_form.save()
+            team_updated = team_form.save(commit=False)
+            team_updated.owner = team.owner
+            team_updated.save()
+            team_pic = team_pic_form.save(commit=False)
+            team_pic.owner = team.owner
+            team_pic.save()
 
+            team_form.save_m2m()
             messages.success(request, 'Your Team Has Been Updated')
             return redirect('account:profile', pk=request.user.pk)
         return render(request, 'account/profile/edit_team.html', {'team_form': team_form,
@@ -182,8 +218,33 @@ def edit_team(request, pk):
         return redirect('search:home')
 
 
+def delete_team(request, pk):
+    if not request.user.is_authenticated:
+        messages.success(request, 'You must logged in')
+        return redirect('search:home')
+
+    if request.method == 'POST':
+        team = get_object_or_404(Team, id=pk)
+
+        if request.user.id != team.owner.id:
+            messages.success(request, 'You Can\'t Delete That Team!')
+            return redirect('search:home')
+
+        confirm_delete = request.POST.get('confirm_delete')
+
+        if confirm_delete:
+            team.delete()
+            messages.success(request, 'Your Team Has Been Deleted')
+            return redirect('account:profile', pk=request.user.pk)
+        else:
+            messages.success(request, 'If you want to delete the project, you need to check the box')
+            return redirect('account:delete_project', pk=pk)
+    return render(request,
+                  'account/profile/confirm_delete_team.html',
+                  {'pk': pk})
+
+
 class TeamDetailView(DetailView):
     model = Team
     template_name = 'account/profile/show_team.html'
     context_object_name = 'team'
-

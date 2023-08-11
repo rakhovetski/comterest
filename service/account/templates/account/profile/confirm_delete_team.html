@@ -1,0 +1,17 @@
+{% extends "search/base.html" %}
+
+{% block title %}Delete Team{% endblock %}
+
+{% block content %}
+    <h3>
+        Are You Sure You Want To Delete The Team?
+    </h3>
+
+    <form method="post" action="{% url 'account:delete_team' pk %}">
+        {% csrf_token %}
+        <p>Delete Team</p>
+        <input type="checkbox" name="confirm_delete">
+        <button type="submit">Delete</button>
+    </form>
+
+{% endblock %}

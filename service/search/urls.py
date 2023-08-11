@@ -1,5 +1,5 @@
 from django.urls import path
-from search.views import home, profile_list, RoleListView, team_list
+from search.views import search, profile_list, RoleListView, team_list
 
 app_name = 'search'
 
@@ -10,5 +10,5 @@ urlpatterns = [
     path('teams/', team_list, name='teams'),
     path('teams/<int:pk>/', team_list, name='teams'),
     path('roles_list/', RoleListView.as_view(), name='roles_list'),
-    path('', home, name='home'),
+    path('', search, name='home'),
 ]
