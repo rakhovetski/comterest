@@ -5,13 +5,15 @@
 
 {% block content %}
     {% for team in page_obj %}
-        <p>
-            <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>
-        </p>
-        <p>
-            {{ team.description|truncatewords:15 }}
-        </p>
-        <p>----------------------------------------------</p>
+        {% if team.is_active %}
+            <p>
+                <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>
+            </p>
+            <p>
+                {{ team.description|truncatewords:15 }}
+            </p>
+            <p>----------------------------------------------</p>
+        {% endif %}
     {% endfor %}
 
     {% include 'search/page_paginator.html' %}

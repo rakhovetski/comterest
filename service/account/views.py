@@ -182,9 +182,10 @@ def add_team(request):
     if request.method == 'POST':
         if team_form.is_valid():
             team = team_form.save(commit=False)
-            profile = Profile.objects.get(user__id=request.user.id)
+            profile = Profile.objects.get(id=request.user.id)
             team.owner = profile
             team.save()
+            team.profile.add(profile)
             team_form.save_m2m()
             return redirect('account:profile', pk=request.user.pk)
     return render(request,
@@ -204,9 +205,8 @@ def edit_team(request, pk):
         return redirect('search:home')
 
     team_form = TeamForm(request.POST or None, request.FILES or None, instance=team)
-    team_pic_form = TeamPicForm(request.POST or None, request.FILES or None)
 
-    if team_form.is_valid() and team_pic_form.is_valid():
+    if team_form.is_valid():
         team_updated = team_form.save(commit=False)
         team_updated.owner = team.owner
         team_updated.save()
@@ -214,8 +214,7 @@ def edit_team(request, pk):
         team_form.save_m2m()
         messages.success(request, 'Your Team Has Been Updated')
         return redirect('account:profile', pk=request.user.pk)
-    return render(request, 'account/profile/edit_team.html', {'team_form': team_form,
-                                                              'team_pic_form': team_pic_form})
+    return render(request, 'account/profile/edit_team.html', {'team_form': team_form,})
 
 
 def delete_team(request, pk):
@@ -242,6 +241,31 @@ def delete_team(request, pk):
     return render(request,
                   'account/profile/confirm_delete_team.html',
                   {'pk': pk})
+
+
+def show_team(request, pk):
+    if not request.user.is_authenticated:
+        messages.success(request, 'You must logged in')
+        return redirect('search:home')
+
+    team = Team.objects.get(pk=pk)
+    profile = Profile.objects.get(user__id=request.user.id)
+    team_profiles = team.profile.filter(pk=profile.pk)
+
+    if request.method == 'POST':
+
+        action = request.POST['follow']
+        if action == 'unfollow':
+            profile.teams.remove(team)
+        elif action == 'follow':
+            profile.teams.add(team)
+        profile.save()
+    context = {
+        'profile': profile,
+        'team': team,
+        'team_profiles': team_profiles
+    }
+    return render(request, 'account/profile/show_team.html', context=context)
 
 
 class TeamDetailView(DetailView):

@@ -39,14 +39,6 @@ class PortfolioProjectForm(forms.ModelForm):
         exclude = ('user',)
 
 
-class TeamPicForm(forms.ModelForm):
-    image = forms.ImageField(label='Team Picture', required=False)
-
-    class Meta:
-        model = Team
-        fields = ('image', )
-
-
 class TeamForm(forms.ModelForm):
     title = forms.CharField(required=True,
                             widget=forms.widgets.Textarea(
@@ -63,13 +55,10 @@ class TeamForm(forms.ModelForm):
     role = forms.ModelMultipleChoiceField(queryset=Role.objects.all(),
                                           widget=forms.CheckboxSelectMultiple,
                                           required=True)
-    profile = forms.ModelMultipleChoiceField(queryset=Profile.objects.all(),
-                                             widget=forms.CheckboxSelectMultiple,
-                                             required=True)
 
     class Meta:
         model = Team
-        fields = ('title', 'description', 'role', 'profile')
+        fields = ('title', 'description', 'role',)
 
 
 class RegisterForm(UserCreationForm):

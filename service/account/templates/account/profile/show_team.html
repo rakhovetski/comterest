@@ -5,6 +5,22 @@
 {% block content %}
     <h1>{{ team.title }}</h1>
     <p>{{ team.description }}</p>
+    <form method="post">
+        {% csrf_token %}
+        {% with request.user as profile %}
+        {% if profile.id != team.owner.id %}
+            {% if team_profiles.exists %}
+                <button name="follow" value="unfollow" type="submit">
+                    Unfollow
+                </button>
+            {% else %}
+                <button name="follow" value="follow" type="submit">
+                    Follow
+                </button>
+            {% endif %}
+        {% endif %}
+        {% endwith %}
+    </form>
     <p>Teammates :</p>
     {% for profile in team.profile.all %}
         <p>
