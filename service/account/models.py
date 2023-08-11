@@ -65,7 +65,6 @@ class Team(models.Model):
     profile = models.ManyToManyField(Profile, related_name='teams')
     role = models.ManyToManyField(Role, related_name='teams')
     owner = models.ForeignKey(Profile, related_name='owned_teams', on_delete=models.PROTECT, default=None)
-    image = models.ImageField(blank=True, null=True, upload_to='images/team_images/')
 
     class Meta:
         verbose_name = 'команда'

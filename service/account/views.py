@@ -1,6 +1,6 @@
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect, reverse, get_object_or_404
-from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm, TeamForm, TeamPicForm
+from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm, TeamForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic.detail import DetailView
@@ -26,31 +26,31 @@ def register_user(request):
 
 
 def edit_user(request):
-    if request.user.is_authenticated:
-        current_user = User.objects.get(id=request.user.id)
-        profile_user = Profile.objects.get(user__id=request.user.id)
-
-        user_form = RegisterForm(request.POST or None, request.FILES or None, instance=current_user)
-        profile_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile_user)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-
-            username = user_form.cleaned_data['username']
-            password = user_form.cleaned_data['password1']
-
-            user = authenticate(request, username=username, password=password)
-
-            login(request, user)
-
-            messages.success(request, 'Your Profile Has Been Updated')
-            return redirect('account:profile', pk=current_user.pk)
-        return render(request, 'account/profile/edit_profile.html', {'user_form': user_form,
-                                                                     'profile_form': profile_form})
-    else:
-        messages.success(request, 'You must be logged in')
+    if not request.user.is_authenticated:
+        messages.success(request, 'You must logged in')
         return redirect('search:home')
+
+    current_user = User.objects.get(id=request.user.id)
+    profile_user = Profile.objects.get(user__id=request.user.id)
+
+    user_form = RegisterForm(request.POST or None, request.FILES or None, instance=current_user)
+    profile_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile_user)
+
+    if user_form.is_valid() and profile_form.is_valid():
+        user_form.save()
+        profile_form.save()
+
+        username = user_form.cleaned_data['username']
+        password = user_form.cleaned_data['password1']
+
+        user = authenticate(request, username=username, password=password)
+
+        login(request, user)
+
+        messages.success(request, 'Your Profile Has Been Updated')
+        return redirect('account:profile', pk=current_user.pk)
+    return render(request, 'account/profile/edit_profile.html', {'user_form': user_form,
+                                                                     'profile_form': profile_form})
 
 
 def user_login(request):
@@ -79,50 +79,54 @@ def user_logout(request):
 
 
 def show_profile(request, pk):
-    if request.user.is_authenticated:
-        profile = Profile.objects.get(user_id=pk)
-        projects = PortfolioProject.objects.filter(user_id=pk).order_by('-created_at')
-        teams = Team.objects.filter(profile__id=profile.pk)
-
-        if request.method == 'POST':
-            current_user_profile = request.user.profile
-
-            action = request.POST['follow']
-            if action == 'unfollow':
-                current_user_profile.follows.remove(profile)
-            elif action == 'follow':
-                current_user_profile.follows.add(profile)
-            current_user_profile.save()
-        context = {
-            'profile': profile,
-            'projects': projects,
-            'teams': teams
-        }
-        return render(request, 'account/profile/profile.html', context=context)
-    else:
+    if not request.user.is_authenticated:
         messages.success(request, 'You must logged in')
         return redirect('search:home')
+
+    profile = Profile.objects.get(user_id=pk)
+    projects = PortfolioProject.objects.filter(user_id=pk).order_by('-created_at')
+    teams = Team.objects.filter(profile__id=profile.pk)
+
+    if request.method == 'POST':
+        current_user_profile = request.user.profile
+
+        action = request.POST['follow']
+        if action == 'unfollow':
+            current_user_profile.follows.remove(profile)
+        elif action == 'follow':
+            current_user_profile.follows.add(profile)
+        current_user_profile.save()
+    context = {
+        'profile': profile,
+        'projects': projects,
+        'teams': teams
+    }
+    return render(request, 'account/profile/profile.html', context=context)
 
 
 def add_project(request):
-    if request.user.is_authenticated:
-        project_form = PortfolioProjectForm(request.POST or None)
-        if request.method == 'POST':
-            if project_form.is_valid():
-                project = project_form.save(commit=False)
-                project.user = request.user
-                project.save()
-                project_form.save_m2m()
-                return redirect('account:profile', pk=request.user.pk)
-        return render(request,
-                      'account/profile/add_project.html',
-                      {'project_form': project_form})
-    else:
+    if not request.user.is_authenticated:
         messages.success(request, 'You must logged in')
         return redirect('search:home')
 
+    project_form = PortfolioProjectForm(request.POST or None)
+    if request.method == 'POST':
+        if project_form.is_valid():
+            project = project_form.save(commit=False)
+            project.user = request.user
+            project.save()
+            project_form.save_m2m()
+            return redirect('account:profile', pk=request.user.pk)
+    return render(request,
+                  'account/profile/add_project.html',
+                  {'project_form': project_form})
+
 
 def edit_project(request, pk):
+    if not request.user.is_authenticated:
+        messages.success(request, 'You must logged in')
+        return redirect('search:home')
+
     project = get_object_or_404(PortfolioProject, pk=pk)
     project_form = PortfolioProjectForm(request.POST or None, instance=project)
 
@@ -138,12 +142,11 @@ def edit_project(request, pk):
 
 
 def delete_project(request, pk):
-    project = get_object_or_404(PortfolioProject, pk=pk)
-
     if not request.user.is_authenticated:
         messages.success(request, 'You must logged in')
         return redirect('search:home')
 
+    project = get_object_or_404(PortfolioProject, pk=pk)
     if request.method == 'POST':
         if request.user.id == project.user.id:
 
@@ -171,51 +174,48 @@ class PortfolioProjectDetailView(DetailView):
 
 
 def add_team(request):
-    if request.user.is_authenticated:
-        team_form = TeamForm(request.POST or None)
-        if request.method == 'POST':
-            if team_form.is_valid():
-                team = team_form.save(commit=False)
-                profile = Profile.objects.get(user__id=request.user.id)
-                team.owner = profile
-                team.save()
-                team_form.save_m2m()
-                return redirect('account:profile', pk=request.user.pk)
-        return render(request,
-                      'account/profile/add_team.html',
-                      {'team_form': team_form})
-    else:
+    if not request.user.is_authenticated:
         messages.success(request, 'You must logged in')
         return redirect('search:home')
 
+    team_form = TeamForm(request.POST or None)
+    if request.method == 'POST':
+        if team_form.is_valid():
+            team = team_form.save(commit=False)
+            profile = Profile.objects.get(user__id=request.user.id)
+            team.owner = profile
+            team.save()
+            team_form.save_m2m()
+            return redirect('account:profile', pk=request.user.pk)
+    return render(request,
+                  'account/profile/add_team.html',
+                  {'team_form': team_form})
+
 
 def edit_team(request, pk):
-    if request.user.is_authenticated:
-        team = get_object_or_404(Team, id=pk)
-
-        if request.user.id != team.owner.id:
-            messages.success(request, 'You Can\'t Edit That Team!')
-            return redirect('search:home')
-
-        team_form = TeamForm(request.POST or None, request.FILES or None, instance=team)
-        team_pic_form = TeamPicForm(request.POST or None, request.FILES or None)
-
-        if team_form.is_valid() and team_pic_form.is_valid():
-            team_updated = team_form.save(commit=False)
-            team_updated.owner = team.owner
-            team_updated.save()
-            team_pic = team_pic_form.save(commit=False)
-            team_pic.owner = team.owner
-            team_pic.save()
-
-            team_form.save_m2m()
-            messages.success(request, 'Your Team Has Been Updated')
-            return redirect('account:profile', pk=request.user.pk)
-        return render(request, 'account/profile/edit_team.html', {'team_form': team_form,
-                                                                  'team_pic_form': team_pic_form})
-    else:
-        messages.success(request, 'You must be logged in')
+    if not request.user.is_authenticated:
+        messages.success(request, 'You must logged in')
         return redirect('search:home')
+
+    team = get_object_or_404(Team, id=pk)
+
+    if request.user.id != team.owner.id:
+        messages.success(request, 'You Can\'t Edit That Team!')
+        return redirect('search:home')
+
+    team_form = TeamForm(request.POST or None, request.FILES or None, instance=team)
+    team_pic_form = TeamPicForm(request.POST or None, request.FILES or None)
+
+    if team_form.is_valid() and team_pic_form.is_valid():
+        team_updated = team_form.save(commit=False)
+        team_updated.owner = team.owner
+        team_updated.save()
+
+        team_form.save_m2m()
+        messages.success(request, 'Your Team Has Been Updated')
+        return redirect('account:profile', pk=request.user.pk)
+    return render(request, 'account/profile/edit_team.html', {'team_form': team_form,
+                                                              'team_pic_form': team_pic_form})
 
 
 def delete_team(request, pk):

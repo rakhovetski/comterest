@@ -12,42 +12,39 @@ def home(request):
 
 
 def profile_list(request, filter_slug=None):
-    if request.user.is_authenticated:
-        if filter_slug:
-            profiles = Profile.objects.filter(user__portfolio_projects__role__slug=filter_slug)
-        else:
-            profiles = Profile.objects.exclude(user=request.user)
-        paginator = Paginator(profiles, 7)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        return render(request, 'search/profiles_list.html', {'page_obj': page_obj})
-    else:
-        messages.success(request, 'You must be logged in')
+    if not request.user.is_authenticated:
+        messages.success(request, 'You must logged in')
         return redirect('search:home')
+
+    if filter_slug:
+        profiles = Profile.objects.filter(user__portfolio_projects__role__slug=filter_slug)
+    else:
+        profiles = Profile.objects.exclude(user=request.user)
+    paginator = Paginator(profiles, 7)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'search/profiles_list.html', {'page_obj': page_obj})
 
 
 def team_list(request, pk=None):
-    if request.user.is_authenticated:
-        if pk:
-            teams = Team.objects.filter(pk=pk)
-        else:
-            teams = Team.objects.all()
-        paginator = Paginator(teams, 7)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        return render(request, 'search/teams_list.html', {'page_obj': page_obj})
+    if not request.user.is_authenticated:
+        messages.success(request, 'You must logged in')
+        return redirect('search:home')
+
+    if pk:
+        teams = Team.objects.filter(pk=pk)
+    else:
+        teams = Team.objects.all()
+    paginator = Paginator(teams, 7)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'search/teams_list.html', {'page_obj': page_obj})
 
 
 class RoleListView(ListView):
     model = Role
     template_name = 'search/roles_list.html'
     context_object_name = 'roles'
-
-
-def validate_user_authenticated(request):
-    if not request.user.is_authenticated:
-        messages.success(request, 'You must be logged in')
-        return redirect('search:home')
 
 
 def search(request):
