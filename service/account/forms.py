@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, PortfolioProject, Role, Team
+from .models import Profile, PortfolioProject, Role
 
 
 class ProfileForm(forms.ModelForm):
@@ -38,28 +38,6 @@ class PortfolioProjectForm(forms.ModelForm):
     class Meta:
         model = PortfolioProject
         exclude = ('user',)
-
-
-class TeamForm(forms.ModelForm):
-    title = forms.CharField(required=True,
-                            widget=forms.widgets.Textarea(
-                                attrs={
-                                    'placeholder': 'Enter Team Name',
-                                },
-                            ), label='')
-    description = forms.CharField(required=True,
-                                  widget=forms.widgets.Textarea(
-                                      attrs={
-                                          'placeholder': 'Enter Description'
-                                      },
-                                  ), label='')
-    role = forms.ModelMultipleChoiceField(queryset=Role.objects.all(),
-                                          widget=forms.CheckboxSelectMultiple,
-                                          required=True)
-
-    class Meta:
-        model = Team
-        fields = ('title', 'description', 'role',)
 
 
 class RegisterForm(UserCreationForm):

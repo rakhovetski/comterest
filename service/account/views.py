@@ -1,11 +1,12 @@
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect, reverse, get_object_or_404
-from account.forms import PortfolioProjectForm, RegisterForm, ProfileForm, TeamForm
+from account.forms import PortfolioProjectForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic.detail import DetailView
 
-from account.models import Profile, PortfolioProject, Team
+from account.models import Profile, PortfolioProject
+from team.models import Team
 
 
 def register_user(request):
@@ -171,99 +172,4 @@ class PortfolioProjectDetailView(DetailView):
     model = PortfolioProject
     template_name = 'account/profile/show_project.html'
     context_object_name = 'project'
-
-
-def add_team(request):
-    if not request.user.is_authenticated:
-        messages.success(request, 'You must logged in')
-        return redirect('search:home')
-
-    team_form = TeamForm(request.POST or None)
-    if request.method == 'POST':
-        if team_form.is_valid():
-            team = team_form.save(commit=False)
-            profile = Profile.objects.get(id=request.user.id)
-            team.owner = profile
-            team.save()
-            team.profile.add(profile)
-            team_form.save_m2m()
-            return redirect('account:profile', pk=request.user.pk)
-    return render(request,
-                  'account/team/add_team.html',
-                  {'team_form': team_form})
-
-
-def edit_team(request, pk):
-    if not request.user.is_authenticated:
-        messages.success(request, 'You must logged in')
-        return redirect('search:home')
-
-    team = get_object_or_404(Team, id=pk)
-
-    if request.user.id != team.owner.id:
-        messages.success(request, 'You Can\'t Edit That Team!')
-        return redirect('search:home')
-
-    team_form = TeamForm(request.POST or None, request.FILES or None, instance=team)
-
-    if team_form.is_valid():
-        team_updated = team_form.save(commit=False)
-        team_updated.owner = team.owner
-        team_updated.save()
-
-        team_form.save_m2m()
-        messages.success(request, 'Your Team Has Been Updated')
-        return redirect('account:profile', pk=request.user.pk)
-    return render(request, 'account/team/edit_team.html', {'team_form': team_form,})
-
-
-def delete_team(request, pk):
-    if not request.user.is_authenticated:
-        messages.success(request, 'You must logged in')
-        return redirect('search:home')
-
-    if request.method == 'POST':
-        team = get_object_or_404(Team, id=pk)
-
-        if request.user.id != team.owner.id:
-            messages.success(request, 'You Can\'t Delete That Team!')
-            return redirect('search:home')
-
-        confirm_delete = request.POST.get('confirm_delete')
-
-        if confirm_delete:
-            team.delete()
-            messages.success(request, 'Your Team Has Been Deleted')
-            return redirect('account:profile', pk=request.user.pk)
-        else:
-            messages.success(request, 'If you want to delete the project, you need to check the box')
-            return redirect('account:delete_project', pk=pk)
-    return render(request,
-                  'account/team/confirm_delete_team.html',
-                  {'pk': pk})
-
-
-def show_team(request, pk):
-    if not request.user.is_authenticated:
-        messages.success(request, 'You must logged in')
-        return redirect('search:home')
-
-    team = Team.objects.get(pk=pk)
-    profile = Profile.objects.get(user__id=request.user.id)
-    team_profiles = team.profile.filter(pk=profile.pk)
-
-    if request.method == 'POST':
-
-        action = request.POST['follow']
-        if action == 'unfollow':
-            profile.teams.remove(team)
-        elif action == 'follow':
-            profile.teams.add(team)
-        profile.save()
-    context = {
-        'profile': profile,
-        'team': team,
-        'team_profiles': team_profiles
-    }
-    return render(request, 'account/team/show_team.html', context=context)
 

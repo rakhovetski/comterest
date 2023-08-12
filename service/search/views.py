@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.generic import ListView
 from django.core.paginator import Paginator
-from account.models import Profile, Role, Team
+from account.models import Profile, Role
 from django.contrib.auth.models import User
+
+from team.models import Team
 
 
 def home(request):

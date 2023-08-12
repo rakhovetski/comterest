@@ -84,10 +84,10 @@
     <h4>Teams: </h4>
         {% for team in teams %}
             <p>
-                <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>
+                <a href="{% url 'account:team:show_team' team.pk %}">{{ team.title }}</a>
                 {% if request.user.id == team.owner.id %}
-                    <a href="{% url 'account:edit_team' team.pk %}">Edit Team</a>
-                    <a href="{% url 'account:delete_team' team.pk %}">Delete Team</a>
+                    <a href="{% url 'account:team:edit_team' pk=team.pk %}">Edit Team</a>
+                    <a href="{% url 'account:team:delete_team' pk=team.pk %}">Delete Team</a>
                 {% endif %}
                 <p>
                     {{ team.description|truncatewords:8 }}
@@ -96,7 +96,7 @@
         {% endfor %}
         <br/>
         {% if request.user.id == profile.user.id %}
-            <a href="{% url 'account:add_team' %}">Create Your Teams</a>
+            <a href="{% url 'account:team:add_team' %}">Create Your Teams</a>
         {% endif %}
     <br/>
 

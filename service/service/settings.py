@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'account.apps.AccountConfig',
     'search.apps.SearchConfig',
+    'team.apps.TeamConfig',
 ]
 
 MIDDLEWARE = [
