@@ -14,14 +14,10 @@ def home(request):
 
 
 def profile_list(request, filter_slug=None):
-    if not request.user.is_authenticated:
-        messages.success(request, 'You must logged in')
-        return redirect('search:home')
-
     if filter_slug:
         profiles = Profile.objects.filter(user__portfolio_projects__role__slug=filter_slug)
     else:
-        profiles = Profile.objects.exclude(user=request.user)
+        profiles = Profile.objects.all()
     paginator = Paginator(profiles, 7)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -29,10 +25,6 @@ def profile_list(request, filter_slug=None):
 
 
 def team_list(request, pk=None):
-    if not request.user.is_authenticated:
-        messages.success(request, 'You must logged in')
-        return redirect('search:home')
-
     if pk:
         teams = Team.objects.filter(pk=pk)
     else:
@@ -48,16 +40,18 @@ class RoleListView(ListView):
     template_name = 'search/roles_list.html'
     context_object_name = 'roles'
 
+    def get_queryset(self):
+        return Role.objects.all().order_by('name')
+
 
 def search(request):
     if request.method == 'POST':
         search = request.POST['search']
-
         try:
             search_type = request.POST['search_type']
         except Exception:
             messages.success(request, 'You Need To Select A Search Type')
-            return redirect('search:home')
+            return redirect('search:search')
 
         if search_type == 'profiles':
             searched = Profile.objects.filter(user__username__icontains=search).order_by('-created_date')

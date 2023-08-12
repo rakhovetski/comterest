@@ -4,7 +4,7 @@ from account.models import Profile, Role
 
 
 class Team(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=50)
     description = models.TextField(max_length=5000, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     profile = models.ManyToManyField(Profile, related_name='teams')

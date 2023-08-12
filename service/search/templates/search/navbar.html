@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark" >
+  <div class="container-fluid">
+    <a class="navbar-brand " href="{% url 'search:home' %}">Comterest</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'search:profile_list' %}">Profiles</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'search:teams' %}">Teams</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'search:roles_list' %}">Roles</a>
+        </li>
+
+        {% if request.user.is_authenticated %}
+            <li class="nav-item display-7">
+                <a class="nav-link text-white" href="{% url 'account:profile' request.user.id %}">My Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'account:logout' %}">Sign out</a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'account:login' %}">Sign in</a>
+            </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link text-success" href="{% url 'search:search' %}">
+              <span class="border border-success rounded-1 p-2 mb-2">
+                Search
+              </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

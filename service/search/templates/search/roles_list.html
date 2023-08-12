@@ -3,12 +3,21 @@
 {% block title %}All Roles{% endblock %}
 
 {% block content %}
+    <br>
+    <div class="row">
+        {% for role in roles %}
+            <div class="col-md-4 p-2 mb-2">
+                <a class="text-decoration-none text-reset" href="{% url 'search:profile_list' role.slug %}">
+                    {{ role.name }}
+                </a>
+            </div>
+        {% if forloop.counter|divisibleby:3 %}
+    </div>
+    <div class="row">
+        {% endif %}
+        {% endfor %}
+    </div>
 
-    {% for role in roles %}
-        <p>
-            <a href="{% url 'search:profile_list' role.slug %}">{{ role.name }}</a>
-        </p>
-    {% endfor %}
 
 {% endblock %}
 

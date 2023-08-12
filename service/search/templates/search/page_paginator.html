@@ -1,23 +1,25 @@
-<nav>
-    <ul>
+<nav class="navbar navbar-expand-lg fixed-bottom">
+    <div class="container justify-content-center">
+    <ul class="pagination" >
         {% if page_obj.has_previous %}
-        <li>
-            <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
-        </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            </li>
         {% endif %}
         {% for p in page_obj.paginator.page_range %}
-        {% if page_obj.number == p %}
-        <li>{{ p }}</li>
-        {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
-        <li>
-            <a href="?page={{ p }}">{{ p }}</a>
-        </li>
-        {% endif %}
+            {% if page_obj.number == p %}
+                <li class="page-item">{{ p }}</li>
+            {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                </li>
+            {% endif %}
         {% endfor %}
         {% if page_obj.has_next %}
-        <li>
-            <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
-        </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            </li>
         {% endif %}
     </ul>
+    </div>
 </nav>

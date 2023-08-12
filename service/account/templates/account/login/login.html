@@ -3,25 +3,35 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <h1>Login in your account</h1>
+    <div class="col-md-6 offset-md-3">
+        <br/>
+        <h1>Login In Your Account</h1>
 
-    {% if form.errors %}
-        <p>
-            Your username and password didn't match.
-            Please try again.
+        {% if form.errors %}
+            <p>
+                Your Username And Password Didn't Match.
+                Please Try Again.
+            </p>
+        {% else %}
+            <p>Please Login Using The Following Form</p>
+        {% endif %}
+
+        <form method="post" action="{% url 'account:login'%}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" name="username" class="form-control" placeholder="Enter Your Username">
+            </div>
+            <div class="mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Enter Your Password">
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-dark">Submit</button>
+            </div>
+        </form>
+
+        <p>If You Don't Have An Account
+            You can <a href="{% url 'account:register' %}">Sign up</a>
         </p>
-    {% else %}
-        <p>Please login using the following form</p>
-    {% endif %}
+    </div>
 
-    <form method="post" action="{% url 'account:login'%}">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Enter Your Username">
-        <input type="password" name="password" placeholder="Enter Your Password">
-        <button type="submit">Submit</button>
-    </form>
-
-    <p>If you don't have an account
-        You can <a href="{% url 'account:register' %}">Sign up</a>
-    </p>
 {% endblock %}

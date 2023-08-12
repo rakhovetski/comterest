@@ -4,25 +4,42 @@
 {% block title %}All Teams{% endblock %}
 
 {% block content %}
-    {% for team in page_obj %}
-        {% if team.is_active %}
-            <p>
-                <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>
+    </br>
+    <div class="container">
+    <div class="row mx-auto justify-content-center">
+        {% for team in page_obj %}
+        <div class="col-12 col-md-6 col-lg-7 mb-5">
+            <div class="card">
+            <div class="card-body">
+            <h3 class="card-title text-center">
+                <a class="text-decoration-none text-reset" href="{% url 'account:team:show_team' team.pk %}">
+                    {{ team.title }}
+                </a>
+
+            </h3>
+            <p class="card-text text-truncate">
+                Description: {{ team.description }}
             </p>
-            <p>
-                {{ team.description|truncatewords:15 }}
-            </p>
-            <p>
-                {% for r in team.role.all %}
-                    {{ r }}
-                {% endfor %}
-            </p>
-            <p>
-                {{ team.created_at }}
-            </p>
-            <p>----------------------------------------------</p>
-        {% endif %}
+                <p>
+                <ul class="list-group list-group-horizontal">
+
+                    {% for r in team.role.all|slice:":5" %}
+                            <li class="list-group-item text-center" >
+                                {{ r }}
+                            </li>
+                    {% endfor %}
+                </ul>
+                </p>
+                <p class="text-center">
+                    {{ team.created_at }}
+                </p>
+
+          </div>
+        </div>
+      </div>
     {% endfor %}
+    </div>
+    </div>
 
     {% include 'search/page_paginator.html' %}
 

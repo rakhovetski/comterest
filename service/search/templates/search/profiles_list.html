@@ -4,28 +4,62 @@
 {% block title %}Profile List{% endblock %}
 
 {% block content %}
-     {% for profile in page_obj %}
-        {% if profile.profile_image %}
-            <img src="{{ profile.profile_image.url }}" width="250" height="250" alt="{{ profile.user.username }}" >
-        {% else %}
-            <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
-        {% endif %}
-        <p>Username: {{ profile.user.username }}</p>
-        <p>Last name: {{ profile.user.last_name }}</p>
-        <p>First name: {{ profile.user.first_name }}</p>
-        <p>
-            Roles: {% with profile.roles_by_profile as roles %}
-                {% for role in roles %}
-                    {{ role.name }}
-               {% endfor %}
-            {% endwith %}
-        </p>
-        <p>
-            Link: <a href="{% url 'account:profile' profile.user.pk %}">@{{ profile.user.username|lower }}</a>
-        </p>
-        <p>-------------------------------------------</p>
-        <br/>
-    {% endfor %}
+    </br>
+
+
+<div class="container">
+    <div class="row mx-auto justify-content-center">
+        {% for profile in page_obj %}
+        <div class="col-12 col-md-6 col-lg-7 mb-5">
+    <div class="card mb-4" style="max-width: 1040px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      {% if profile.profile_image %}
+                <img src="{{ profile.profile_image.url }}" width="250" height="250" alt="{{ profile.user.username }}" >
+            {% else %}
+                <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
+            {% endif %}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h3 class="card-title">@{{ profile.user.username }}</h3>
+          <p class="card-text">
+               Last name: {{ profile.user.last_name }}
+            </p>
+                <p class="card-text">
+               First name: {{ profile.user.first_name }}
+            </p>
+                </p>
+                <p class="card-text">
+               Experience: {{ profile.experience }}
+            </p>
+          <ul class="list-group list-group-horizontal">
+
+<!--                    {% with profile.roles_by_profile as roles %}-->
+<!--                        {% for role in roles|slice:":4" %}-->
+<!--                            <li class="list-group-item text-center" >-->
+<!--                                {{ role.name }}-->
+<!--                            </li>-->
+<!--                        {% endfor %}-->
+<!--                    {% endwith %}-->
+
+              {% for r in profile.roles_by_profile|slice:":4" %}
+                            <li class="list-group-item text-center" >
+                                {{ r }}
+                            </li>
+                    {% endfor %}
+
+
+                </ul>
+              </div>
+    </div>
+  </div>
+</div>
+
+            </div>
+        {% endfor%}
+    </div>
+</div>
 
     {% include 'search/page_paginator.html' %}
 {% endblock %}

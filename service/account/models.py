@@ -40,7 +40,7 @@ class Profile(models.Model):
         for project in projects:
             for role in project.role.all():
                 roles.add(role)
-        return roles
+        return list(roles)
 
     def __str__(self):
         return f'{self.user.username}: {self.full_name()}'
@@ -59,7 +59,7 @@ post_save.connect(create_profile, sender=User)
 
 class PortfolioProject(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='portfolio_projects')
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=75)
     description = models.TextField(max_length=5000, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     role = models.ManyToManyField(Role, related_name='portfolio_roles')

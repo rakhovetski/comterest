@@ -32,7 +32,7 @@
             {% endfor %}
     {% elif search_type == 'teams' %}
             {% for team in page_obj %}
-                Team: <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>
+                Team: <a href="{% url 'account:team:show_team' team.pk %}">{{ team.title }}</a>
                 <p>{{ team.description|truncatewords:8}}</p>
                 <p>----------------------------------</p>
             {% endfor %}
