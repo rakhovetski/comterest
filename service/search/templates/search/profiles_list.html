@@ -16,7 +16,7 @@
         <p>
             Roles: {% with profile.roles_by_profile as roles %}
                 {% for role in roles %}
-                {{ role.name }}
+                    {{ role.name }}
                {% endfor %}
             {% endwith %}
         </p>

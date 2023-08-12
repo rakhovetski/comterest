@@ -189,7 +189,7 @@ def add_team(request):
             team_form.save_m2m()
             return redirect('account:profile', pk=request.user.pk)
     return render(request,
-                  'account/profile/add_team.html',
+                  'account/team/add_team.html',
                   {'team_form': team_form})
 
 
@@ -214,7 +214,7 @@ def edit_team(request, pk):
         team_form.save_m2m()
         messages.success(request, 'Your Team Has Been Updated')
         return redirect('account:profile', pk=request.user.pk)
-    return render(request, 'account/profile/edit_team.html', {'team_form': team_form,})
+    return render(request, 'account/team/edit_team.html', {'team_form': team_form,})
 
 
 def delete_team(request, pk):
@@ -239,7 +239,7 @@ def delete_team(request, pk):
             messages.success(request, 'If you want to delete the project, you need to check the box')
             return redirect('account:delete_project', pk=pk)
     return render(request,
-                  'account/profile/confirm_delete_team.html',
+                  'account/team/confirm_delete_team.html',
                   {'pk': pk})
 
 
@@ -265,10 +265,5 @@ def show_team(request, pk):
         'team': team,
         'team_profiles': team_profiles
     }
-    return render(request, 'account/profile/show_team.html', context=context)
+    return render(request, 'account/team/show_team.html', context=context)
 
-
-class TeamDetailView(DetailView):
-    model = Team
-    template_name = 'account/profile/show_team.html'
-    context_object_name = 'team'

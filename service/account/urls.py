@@ -1,6 +1,6 @@
 from django.urls import path
 from account.views import register_user, edit_user, user_login, show_profile, user_logout, add_project, \
-    PortfolioProjectDetailView, add_team, TeamDetailView, edit_project, edit_team, delete_project, delete_team, show_team
+    PortfolioProjectDetailView, add_team, edit_project, edit_team, delete_project, delete_team, show_team
 
 app_name = 'account'
 
