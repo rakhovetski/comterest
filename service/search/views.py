@@ -50,10 +50,25 @@ class RoleListView(ListView):
 def search(request):
     if request.method == 'POST':
         search = request.POST['search']
-        searched = User.objects.filter(username__contains=search)
+
+        try:
+            search_type = request.POST['search_type']
+        except Exception:
+            messages.success(request, 'You Need To Select A Search Type')
+            return redirect('search:home')
+
+        if search_type == 'profiles':
+            searched = Profile.objects.filter(user__username__icontains=search).order_by('-created_date')
+        if search_type == 'teams':
+            searched = Team.objects.filter(title__icontains=search).order_by('-created_at')
+
+        paginator = Paginator(searched, 7)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
         return render(request,
                       'search/search.html',
                       {'search': search,
-                       'searched': searched})
+                       'search_type': search_type,
+                       'page_obj': page_obj})
     return render(request,
                   'search/search.html', {})

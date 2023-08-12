@@ -13,9 +13,8 @@
         <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
     {% endif %}
     <br/>
+    <p>First name: {{ profile.user.first_name }}</p>
     <p>Last name: {{ profile.user.last_name }}</p>
-    <p>First name: {{ profile.user.first_name }}</p>
-    <p>First name: {{ profile.user.first_name }}</p>
     <p>Experience: {{ profile.experience }}</p>
 
     <strong>Follows: </strong>
@@ -59,6 +58,7 @@
         </p>
     {% endif %}
     <p>----------------------------------------</p>
+    <h4>Projects: </h4>
         {% if projects %}
             {% for project in projects %}
                 <p>
@@ -81,6 +81,7 @@
         {% endif %}
         <br/>
 
+    <h4>Teams: </h4>
         {% for team in teams %}
             <p>
                 <a href="{% url 'account:show_team' team.pk %}">{{ team.title }}</a>

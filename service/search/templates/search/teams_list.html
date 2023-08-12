@@ -12,6 +12,14 @@
             <p>
                 {{ team.description|truncatewords:15 }}
             </p>
+            <p>
+                {% for r in team.role.all %}
+                    {{ r }}
+                {% endfor %}
+            </p>
+            <p>
+                {{ team.created_at }}
+            </p>
             <p>----------------------------------------------</p>
         {% endif %}
     {% endfor %}
