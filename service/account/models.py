@@ -15,18 +15,8 @@ class Role(models.Model):
         return self.name
 
 
-class ProfileManager(UserManager):
-    def create_superuser(self, username, email=None, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        extra_fields.setdefault('date_of_birth', input('Enter your date of birth: '))
-        return super().create_superuser(username, email, password, **extra_fields)
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # date_of_birth = models.DateField()
     experience = models.PositiveIntegerField(null=True, blank=True, default=0)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -54,8 +44,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username}: {self.full_name()}'
-
-    # objects = ProfileManager()
 
 
 class Team(models.Model):

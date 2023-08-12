@@ -13,6 +13,10 @@
         <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
     {% endif %}
     <br/>
+    <p>Last name: {{ profile.user.last_name }}</p>
+    <p>First name: {{ profile.user.first_name }}</p>
+    <p>First name: {{ profile.user.first_name }}</p>
+    <p>Experience: {{ profile.experience }}</p>
 
     <strong>Follows: </strong>
     {% for following in profile.follows.all %}

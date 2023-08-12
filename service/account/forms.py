@@ -4,12 +4,13 @@ from django.contrib.auth.models import User
 from .models import Profile, PortfolioProject, Role, Team
 
 
-class ProfilePicForm(forms.ModelForm):
-    profile_image = forms.ImageField(label='Profile Picture')
+class ProfileForm(forms.ModelForm):
+    profile_image = forms.ImageField(label='Profile Picture', required=False)
+    experience = forms.IntegerField(required=False)
 
     class Meta:
         model = Profile
-        fields = ('profile_image',)
+        fields = ('profile_image', 'experience')
 
 
 class LoginForm(forms.Form):

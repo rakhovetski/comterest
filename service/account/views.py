@@ -1,6 +1,6 @@
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect, reverse, get_object_or_404
-from account.forms import PortfolioProjectForm, RegisterForm, ProfilePicForm, TeamForm
+from account.forms import PortfolioProjectForm, RegisterForm, ProfileForm, TeamForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic.detail import DetailView
@@ -34,7 +34,7 @@ def edit_user(request):
     profile_user = Profile.objects.get(user__id=request.user.id)
 
     user_form = RegisterForm(request.POST or None, request.FILES or None, instance=current_user)
-    profile_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile_user)
+    profile_form = ProfileForm(request.POST or None, request.FILES or None, instance=profile_user)
 
     if user_form.is_valid() and profile_form.is_valid():
         user_form.save()
