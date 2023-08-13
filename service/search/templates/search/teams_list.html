@@ -28,6 +28,11 @@
                                 {{ r }}
                             </li>
                     {% endfor %}
+                {% if team.role.all|slice:"5:"|length > 0%}
+                  <li class="list-group-item text-white bg-dark">
+                      +{{ team.role.all|slice:"5:"|length}}
+                  </li>
+            {% endif %}
                 </ul>
                 </p>
                 <p class="text-center">

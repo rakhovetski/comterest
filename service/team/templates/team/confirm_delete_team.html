@@ -3,15 +3,16 @@
 {% block title %}Delete Team{% endblock %}
 
 {% block content %}
-    <h3>
-        Are You Sure You Want To Delete The Team?
-    </h3>
-
+<div class="col-md-6 offset-md-3">
+        </br>
+    <h1>Delete Team</h1>
     <form method="post" action="{% url 'account:team:delete_team' pk %}">
+        <div class="mb-3">
         {% csrf_token %}
-        <p>Delete Team</p>
-        <input type="checkbox" name="confirm_delete">
-        <button type="submit">Delete</button>
+        <input type="checkbox" class="btn-check" id="btn-check-2-outlined" autocomplete="off" name="confirm_delete">
+        Are You Really Want To Delete This Team? <label class="btn btn-outline-primary" for="btn-check-2-outlined">Confirm Delete</label><br>
+        </div>
+        <button type="submit" class="btn btn-dark">Delete</button>
     </form>
-
+</div>
 {% endblock %}

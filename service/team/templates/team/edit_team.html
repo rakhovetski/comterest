@@ -3,6 +3,7 @@
 {% block title %}Edit Team{% endblock %}
 
 {% block content %}
+<div class="col-md-6 offset-md-3">
     <h1>Edit Team</h1>
 
     <form method="post" action="" enctype="multipart/form-data">
@@ -12,4 +13,5 @@
         {{ team_pic_form.as_p }}
         <button type="submit">Edit Team</button>
     </form>
+</div>
 {% endblock %}

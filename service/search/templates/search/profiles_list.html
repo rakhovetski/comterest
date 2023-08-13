@@ -22,7 +22,11 @@
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h3 class="card-title">@{{ profile.user.username }}</h3>
+        <h3 class="card-title">
+            <a class="" href="{% url 'account:profile' profile.pk %}">
+                @{{ profile.user.username }}
+            </a>
+        </h3>
           <p class="card-text">
                Last name: {{ profile.user.last_name }}
             </p>
@@ -35,19 +39,17 @@
             </p>
           <ul class="list-group list-group-horizontal">
 
-<!--                    {% with profile.roles_by_profile as roles %}-->
-<!--                        {% for role in roles|slice:":4" %}-->
-<!--                            <li class="list-group-item text-center" >-->
-<!--                                {{ role.name }}-->
-<!--                            </li>-->
-<!--                        {% endfor %}-->
-<!--                    {% endwith %}-->
 
               {% for r in profile.roles_by_profile|slice:":4" %}
                             <li class="list-group-item text-center" >
                                 {{ r }}
                             </li>
                     {% endfor %}
+              {% if profile.roles_by_profile|slice:"4:"|length > 0%}
+                  <li class="list-group-item text-white bg-dark">
+                      +{{ profile.roles_by_profile|slice:"5:"|length}}
+                  </li>
+            {% endif %}
 
 
                 </ul>

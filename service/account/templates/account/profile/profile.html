@@ -4,100 +4,146 @@
 {% block title %}Account{% endblock %}
 
 {% block content %}
-
-    <h1>@{{ profile.user.username }}`s Profile</h1>
-
-    {% if profile.profile_image %}
-        <img src="{{ profile.profile_image.url }}" width="250" height="250" alt="{{ profile.user.username }}" >
+<br>
+        <div class="container">
+    <div class="row mx-auto justify-content-center" style="max-width: 840px;">
+  <div class="card">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+          {% if profile.profile_image %}
+        <img class="card-img" src="{{ profile.profile_image.url }}" width="250" height="250" alt="{{ profile.user.username }}" >
     {% else %}
-        <img src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
+        <img class="card-img" src="{% static 'account/img/no_image.png' %}" width="250" height="250" alt="{{ profile.user.username}}">
     {% endif %}
-    <br/>
-    <p>First name: {{ profile.user.first_name }}</p>
-    <p>Last name: {{ profile.user.last_name }}</p>
-    <p>Experience: {{ profile.experience }}</p>
+      </div>
 
-    <strong>Follows: </strong>
-    {% for following in profile.follows.all %}
-        <a href="{% url 'account:profile' following.user.id %}">
-            {% if profile.user.id != request.user.id and following.user.id != profile.user.id %}
-                @{{ following }}
-            {% endif %}
-        </a><br/>
-    {% endfor %}
-    <br/>
+      <div class="col-md-8">
+          </br>
+          </br>
+        <div class="card-body">
 
-    <strong>Followed By: </strong>
-    {% for following in profile.followed_by.all %}
-        <a href="{% url 'account:profile' following.user.id %}">
-            {% if profile.user.id != request.user.id and following.user.id != profile.user.id%}
-                @{{ following }}
-            {% endif %}
-        </a><br/>
-    {% endfor %}
-    <br/>
-
-    <form method="post">
+          <h5 class="card-title">@{{ profile.user.username }}</h5>
+          <p class="card-text">{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+      <p class="card-text">{{ profile.experience }} years of experience</p>
+            <form method="post">
         {% csrf_token %}
         {% if profile.user.id != request.user.id %}
             {% if profile in user.profile.follows.all %}
-                <button name="follow" value="unfollow" type="submit">
+                <button name="follow" value="unfollow" type="submit" class="btn btn-dark">
                     Unfollow @{{ profile.user.username|lower }}
                 </button>
             {% else %}
-                <button name="follow" value="follow" type="submit">
+                <button name="follow" value="follow" type="submit" class="btn btn-dark">
                     Follow @{{ profile.user.username|lower }}
                 </button>
             {% endif %}
-        {% endif %}
-    </form>
-
-    {% if request.user.id == profile.user.id %}
+        {% else %}
         <p>
-            <a href="{% url 'account:edit_user' %}">Edit Profile</a>
+            <a class="btn btn-dark" href="{% url 'account:edit_user' %}">Edit Profile</a>
         </p>
     {% endif %}
-    <p>----------------------------------------</p>
-    <h4>Projects: </h4>
+    </form>
+        </div>
+      </div>
+      <div class="col-md-12 mt-2">
+          <h5>Follows: </h5>
+          <div>
+              <ul class="list-group list-group-horizontal">
+    {% for following in profile.follows.all|slice:":5"  %}
+        <a href="{% url 'account:profile' following.user.id %}">
+            {% if profile.user.id != request.user.id and following.user.id != profile.user.id %}
+                @{{ following.user.username }}
+            {% endif %}
+            {% if profile.user.id != request.user.id and following.user.id != profile.user.id%}
+                <li class="list-group-item">@{{ following.user.username }}</li>
+            {% endif %}
+        </a>
+
+    {% endfor %}
+
+                {% if profile.follows.all|slice:"4:"|length > 0%}
+                  <li class="list-group-item text-white bg-dark">
+                      +{{ profile.follows.all|length}}
+                  </li>
+                  {% endif %}
+              </ul>
+              <br>
+        <h5>Followed By: </h5>
+              <ul class="list-group list-group-horizontal">
+    {% for following in profile.followed_by.all|slice:":5" %}
+        <a href="{% url 'account:profile' following.user.id %}">
+            {% if profile.user.id != request.user.id and following.user.id != profile.user.id%}
+                <li class="list-group-item">@{{ following.user.username }}</li>
+            {% endif %}
+        </a><br/>
+    {% endfor %}
+                  {% if profile.followed_by.all|slice:"4:"|length > 0 %}
+                  <li class="list-group-item text-white bg-dark">
+                      +{{ profile.followed_by.all|length}}
+                  </li>
+                  {% endif %}
+              </ul>
+          </div>
+          <hr>
+
+    <h3>Projects: </h3>
+
+          {% if request.user.id == profile.user.id %}
+            <a class="btn btn-dark" href="{% url 'account:add_project' %}">Add Your Projects</a>
+        {% endif %}
+          <hr>
+
         {% if projects %}
+
             {% for project in projects %}
+
+          <div>
                 <p>
                     <a href="{% url 'account:show_project' project.pk %}">{{ project.title }}</a>
-                    {% if request.user.id == profile.user.id %}
-                        <a href="{% url 'account:edit_project' project.pk %}">Edit Project</a>
-                        <a href="{% url 'account:delete_project' project.pk %}">Delete Project</a>
-                    {% endif %}
                 </p>
                 <p>
                     {{ project.description|truncatewords:8 }}
                 </p>
-                <p>
-                    ----------------------------------------
-                </p>
+                    {{ project.created_at }}
+              </div>
+          <hr>
             {% endfor %}
-        {% endif %}
-        {% if request.user.id == profile.user.id %}
-            <a href="{% url 'account:add_project' %}">Add Your Projects</a>
         {% endif %}
         <br/>
 
-    <h4>Teams: </h4>
+    <h3>Teams: </h3>
+          {% if request.user.id == profile.user.id %}
+            <a class="btn btn-dark" href="{% url 'account:team:add_team' %}">Create Your Teams</a>
+        {% endif %}
+          <hr>
         {% for team in teams %}
             <p>
                 <a href="{% url 'account:team:show_team' team.pk %}">{{ team.title }}</a>
-                {% if request.user.id == team.owner.id %}
-                    <a href="{% url 'account:team:edit_team' pk=team.pk %}">Edit Team</a>
-                    <a href="{% url 'account:team:delete_team' pk=team.pk %}">Delete Team</a>
-                {% endif %}
                 <p>
                     {{ team.description|truncatewords:8 }}
                 </p>
             </p>
+          <p>Roles:</p>
+        <ul class="list-group list-group-horizontal">
+            {% if team.role.all|length > 5 %}
+                {% for role in team.role.all|slice:":5" %}
+                    <li class="list-group-item text-center" >{{ role }}</li>
+                {% endfor %}
+                <li class="list-group-item text-center bg-dark text-white" >+{{ team.role.all|length}}</li>
+            {% else %}
+            {% for role in team.role.all|slice:":5" %}
+                    <li class="list-group-item text-center" >{{ role }}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    <p>
+            <p>
+                {{ team.created_at }}
+            </p>
+          <hr>
         {% endfor %}
         <br/>
-        {% if request.user.id == profile.user.id %}
-            <a href="{% url 'account:team:add_team' %}">Create Your Teams</a>
-        {% endif %}
+
     <br/>
 
 
@@ -105,5 +151,12 @@
     {% if request.user.id == profile.user.id %}
 
     {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+    </div>
+        </div>
 
 {% endblock %}

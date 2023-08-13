@@ -3,17 +3,33 @@
 {% block title %}Project Detail{% endblock %}
 
 {% block content %}
+<div class="col-md-6 offset-md-3">
+    <br>
     <h1>Title: {{ project.title }}</h1>
     <p>
         Description: {{ project.description }}
     </p>
     <p>
         Roles:
-        {% for role in project.role.all %}
-            {{ role }}
+        <ul class="list-group list-group-horizontal">
+        {% for role in project.role.all|slice:":8" %}
+            <li class="list-group-item text-center" >{{ role }}</li>
         {% endfor %}
+            {% if project.role.all|slice:"4:"|length > 0%}
+                  <li class="list-group-item text-white bg-dark">
+                      +{{ profile.role.all|slice:"4:"|length}}
+                  </li>
+            {% endif %}
+        </ul>
     </p>
     <p>
         Created at: {{ project.formatted_date }}
     </p>
+    <p>
+        {% if request.user.id == project.user.id %}
+        <a class="btn btn-dark" href="{% url 'account:edit_project' project.pk %}">Edit Project</a>
+                        <a class="btn btn-dark" href="{% url 'account:delete_project' project.pk %}">Delete Project</a>
+                    {% endif %}
+    </p>
+</div>
 {% endblock %}

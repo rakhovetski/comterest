@@ -3,13 +3,22 @@
 {% block title %}Sign up{% endblock %}
 
 {% block content %}
+<div class="col-md-6 offset-md-3">
+    <br>
     <h1>Edit Profile</h1>
 
     <form method="post" action="" enctype="multipart/form-data">
+        <div class="mb-3">
         {% csrf_token %}
         {{ user_form.as_p }}
         <br/>
+            </div>
+        <div class="mb-3">
         {{ profile_form.as_p }}
-        <button type="submit">Edit User</button>
+        </div>
+        <div class="mb-3">
+        <button type="submit" class="btn btn-dark">Edit Profile</button>
+        </div>
     </form>
+</div>
 {% endblock %}

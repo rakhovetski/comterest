@@ -1,9 +1,13 @@
 {% extends "search/base.html" %}
+{% load static %}
 
 {% block title %}Comterest{% endblock %}
 
 {% block content %}
     <h1>
         Hello, World!
+
+        <img src="{% static 'account/img/us.jpg' %}">
+
     </h1>
 {% endblock %}

@@ -4,6 +4,8 @@
 
 
 {% block content %}
+<div class="col-md-6 offset-md-3">
+    <br>
     <h1>Search</h1>
 
     <form method="post">
@@ -15,28 +17,44 @@
         <label>
             <input type="radio" name="search_type" value="teams">Team
         </label>
-        <button type="submit">Search</button>
+        </br>
+        </br>
+        <button type="submit" class="btn btn-dark">Search</button>
     </form>
     <br/>
     {% if search %}
         <h3>You Searched For: {{ search }} | Type: {{ search_type.capitalize }}</h3>
     {% endif %}
+    <hr>
 
     {% if search_type == 'profiles' %}
             {% for profile in page_obj %}
-                User: <a href="{% url 'account:profile' profile.pk %}">@{{ profile.user.username }}</a>
+                <a href="{% url 'account:profile' profile.pk %}">@{{ profile.user.username }}</a>
                 <p>
                     Experience: {{ profile.experience }}
+                <ul class="list-group list-group-horizontal">
+        {% for role in profile.roles_by_profile|slice:":5" %}
+            <li class="list-group-item text-center" >{{ role }}</li>
+        {% endfor %}
+            {% if profile.roles_by_profile|slice:":5"|length > 0%}
+                  <li class="list-group-item text-white bg-dark">
+                      +{{ profile.roles_by_profile|slice:":5"|length}}
+                  </li>
+            {% endif %}
+        </ul>
+                <p>
+                    Created at: {{profile.created_date }}
                 </p>
-                <p>----------------------------------</p>
+                <hr>
             {% endfor %}
     {% elif search_type == 'teams' %}
             {% for team in page_obj %}
                 Team: <a href="{% url 'account:team:show_team' team.pk %}">{{ team.title }}</a>
                 <p>{{ team.description|truncatewords:8}}</p>
-                <p>----------------------------------</p>
+                <hr>
             {% endfor %}
     {% endif %}
+</div>
 
     {% include 'search/page_paginator.html' %}
 {% endblock %}

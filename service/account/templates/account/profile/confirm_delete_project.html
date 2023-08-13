@@ -3,14 +3,19 @@
 {% block title %}Delete Project{% endblock %}
 
 {% block content %}
-    <h3>
-        Are You Sure You Want To Delete The Project?
-    </h3>
+<div class="col-md-6 offset-md-3">
+    </br>
+    <h1>
+        Delete Project?
+    </h1>
 
     <form method="post" action="{% url 'account:delete_project' pk %}">
+        <div class="mb-3">
         {% csrf_token %}
-        <p>Delete Project</p>
-        <input type="checkbox" name="confirm_delete">
-        <button type="submit">Delete</button>
+        <input type="checkbox" class="btn-check" id="btn-check-2-outlined" autocomplete="off" name="confirm_delete">
+        Are You Really Want To Delete This Project? <label class="btn btn-outline-primary" for="btn-check-2-outlined">Confirm Delete</label><br>
+        </div>
+        <button type="submit" class="btn btn-dark">Delete</button>
     </form>
+</div>
 {% endblock %}

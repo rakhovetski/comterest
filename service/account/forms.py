@@ -20,7 +20,7 @@ class LoginForm(forms.Form):
 
 class PortfolioProjectForm(forms.ModelForm):
     title = forms.CharField(required=True,
-                            widget=forms.widgets.Textarea(
+                            widget=forms.TextInput(
                                 attrs={
                                     'placeholder': 'Enter Project Title',
                                 },

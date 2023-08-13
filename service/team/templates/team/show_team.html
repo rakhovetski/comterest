@@ -3,8 +3,10 @@
 {% block title %}Team Detail{% endblock %}
 
 {% block content %}
+<div class="col-md-6 offset-md-3">
+    <br>
     <h1>{{ team.title }}</h1>
-    <p>{{ team.description }}</p>
+    <p class="text-wrap text-break">Description: {{ team.description }}</p>
     <form method="post">
         {% csrf_token %}
         {% with request.user as profile %}
@@ -24,18 +26,27 @@
     <p>Teammates :</p>
     {% for profile in team.profile.all %}
         <p>
-            <a href="{% url 'account:profile' profile.pk %}">{{ profile.user.username }}</a>
+            <a href="{% url 'account:profile' profile.pk %}">@{{ profile.user.username }}</a>
         </p>
     {% endfor %}
-    <p>---------------------------------------------</p>
-    <p>Roles: </p>
-    {% for role in team.role.all %}
-        <p>
-            <a href="{% url 'search:profile_list' role.slug %}">{{ role.name }}</a>
-        </p>
-    {% endfor %}
-    <p>---------------------------------------------</p>
+
+    <p>Roles:</p>
+        <ul class="list-group list-group-horizontal">
+        {% for role in team.role.all|slice:":5" %}
+            <li class="list-group-item text-center" >{{ role }}</li>
+        {% endfor %}
+            {% if team.role.all|slice:"5:"|length > 0%}
+                  <li class="list-group-item text-white bg-dark">
+                      +{{ team.role.all|slice:"5:"|length}}
+                  </li>
+            {% endif %}
+        </ul>
     <p>
         {{ team.created_at }}
     </p>
+{% if request.user.id == team.owner.id %}
+                    <a class="btn btn-dark" href="{% url 'account:team:edit_team' pk=team.pk %}">Edit Team</a>
+                    <a class="btn btn-dark" href="{% url 'account:team:delete_team' pk=team.pk %}">Delete Team</a>
+                {% endif %}
+</div>
 {% endblock %}
