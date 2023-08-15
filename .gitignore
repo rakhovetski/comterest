@@ -39,6 +39,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+venv/
 eggs/
 lib/
 lib64/
