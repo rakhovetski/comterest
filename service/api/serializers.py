@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from account.models import Profile, PortfolioProject, Role
+from team.models import Team
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -38,6 +39,32 @@ class UserDetailSerializer(serializers.ModelSerializer):
         exclude = ('password', )
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Profile
+        fields = ['user', 'experience']
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ['title', 'description', 'formatted_date']
+
+
+class TeamDetailSerializer(serializers.ModelSerializer):
+    role = RoleSerializer(many=True)
+    profile = ProfileSerializer(many=True)
+    owner = ProfileSerializer()
+
+    class Meta:
+        model = Team
+        fields = ['title', 'description', 'created_at',
+                  'profile', 'role', 'owner',
+                  'is_active']
+
+
 class ProfileDetailSerializer(serializers.ModelSerializer):
     follows = serializers.PrimaryKeyRelatedField(many=True,
                                                  queryset=Profile.objects.all())
@@ -46,11 +73,3 @@ class ProfileDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         exclude = ['updated_date', 'profile_image']
-
-
-class ProfileListSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
-    class Meta:
-        model = Profile
-        fields = ['user', 'experience']

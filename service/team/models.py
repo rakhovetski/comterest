@@ -17,6 +17,9 @@ class Team(models.Model):
         verbose_name_plural = 'команды'
         ordering = ['title']
 
+    def formatted_date(self):
+        return self.created_at.strftime('%B %d %Y')
+
     def __str__(self):
         return self.title
 
