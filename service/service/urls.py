@@ -23,6 +23,7 @@ urlpatterns = [
     path('account/', include('account.urls', namespace='account')),
     path('api/v1/', include('api.urls', namespace='api')),
     path('api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/v1/api-auth/', include('rest_framework_social_oauth2.urls')),
     path('', include('search.urls', namespace='search')),
 ]
 
