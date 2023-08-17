@@ -10,12 +10,18 @@ class RoleSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', )
 
 
-class PortfolioProjectSerializer(serializers.ModelSerializer):
+class PortfolioProjectDetailSerializer(serializers.ModelSerializer):
     role = RoleSerializer(many=True)
 
     class Meta:
         model = PortfolioProject
-        fields = '__all__'
+        fields = ['id', 'title', 'description', 'role', 'user_id']
+
+
+class PortfolioProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioProject
+        fields = ['id', 'title', 'description', 'formatted_date']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    portfolio_projects = PortfolioProjectSerializer(many=True)
+    portfolio_projects = PortfolioProjectDetailSerializer(many=True)
 
     class Meta:
         model = User

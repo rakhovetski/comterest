@@ -4,14 +4,14 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework import mixins
 from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
-from account.models import Role, Profile
+from account.models import Role, Profile, PortfolioProject
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 
 from api.permissions import IsAdminOrReadOnly, IsOwnerOrNothing
 from api.serializers import RoleSerializer, UserDetailSerializer, UserSerializer, ProfileDetailSerializer, \
-    ProfileListSerializer
+    ProfileListSerializer, PortfolioProjectDetailSerializer, PortfolioProjectSerializer
 
 
 class UserUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -31,12 +31,25 @@ class RoleListView(generics.ListAPIView):
     serializer_class = RoleSerializer
     filter_backends = [OrderingFilter]
     ordering_fields = ['id', 'name']
+    permission_classes = [IsAuthenticated]
 
 
 class RoleUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
     permission_classes = [IsAdminOrReadOnly]
+
+
+class PortfolioProjectListView(generics.ListAPIView):
+    queryset = PortfolioProject.objects.all()
+    serializer_class = PortfolioProjectSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class PortfolioProjectDetailView(generics.RetrieveAPIView):
+    queryset = PortfolioProject.objects.all()
+    serializer_class = PortfolioProjectDetailSerializer
+    permission_classes = [IsAdminUser | IsOwnerOrNothing]
 
 
 class ProfileListView(generics.ListAPIView):
@@ -47,8 +60,7 @@ class ProfileListView(generics.ListAPIView):
     ordering_fields = ['id', 'last_name', 'username']
 
 
-class ProfileDetailView(mixins.UpdateModelMixin,
-                        mixins.DestroyModelMixin,
+class ProfileDetailView(mixins.DestroyModelMixin,
                         mixins.RetrieveModelMixin,
                         viewsets.GenericViewSet):
     queryset = Profile.objects.all()
@@ -60,13 +72,6 @@ class ProfileDetailView(mixins.UpdateModelMixin,
         serializer = self.get_serializer(instance)
         data = serializer.data
         return Response(data)
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
