@@ -4,6 +4,8 @@ from account.forms import PortfolioProjectForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic.detail import DetailView
+from account.tasks import send_mail_about_registration
+from django.http import HttpResponse
 
 from account.models import Profile, PortfolioProject
 from team.models import Team
@@ -20,6 +22,7 @@ def register_user(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                send_mail_about_registration.delay(user.id)
                 messages.success(request, ('You Have successfully register'))
                 return redirect('search:home')
 

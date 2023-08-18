@@ -76,5 +76,12 @@ class PortfolioProject(models.Model):
         return f'{self.user} - {self.title} - {self.formatted_date()}'
 
 
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    project = models.ForeignKey(PortfolioProject, on_delete=models.CASCADE, related_name='comments')
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 
 

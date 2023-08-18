@@ -4,3 +4,4 @@ psycopg2==2.8.6
 Pillow==9.2.0
 django-rest-framework-social-oauth2==1.1.0
 celery[redis]==5.2.7
+flower==1.2.0

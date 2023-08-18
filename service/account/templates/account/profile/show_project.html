@@ -31,5 +31,10 @@
                         <a class="btn btn-dark" href="{% url 'account:delete_project' project.pk %}">Delete Project</a>
                     {% endif %}
     </p>
+    <form method="post" action="">
+        {% csrf_token %}
+        {% comment_form.as_p %}
+        <button type="submit">Submit</button>
+    </form>
 </div>
 {% endblock %}

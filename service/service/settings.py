@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_social_oauth2',
     'oauth2_provider',
     'social_django',
-    'rest_framework_social_oauth2',
 
     'account.apps.AccountConfig',
     'api.apps.ApiConfig',
@@ -101,8 +101,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'service.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)]
+        }
+    }
+}
 
 
 DATABASES = {
@@ -172,3 +179,7 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = ''
 
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
+
+
+EMAIL_HOST_USER = 'hello_world@gmail.com'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

@@ -11,6 +11,7 @@ class Team(models.Model):
     role = models.ManyToManyField(Role, related_name='teams')
     owner = models.ForeignKey(Profile, related_name='owned_teams', on_delete=models.PROTECT, default=None)
     is_active = models.BooleanField(default=True)
+    slug = models.CharField(max_length=50, blank=True)
 
     class Meta:
         verbose_name = 'команда'

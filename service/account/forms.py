@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, PortfolioProject, Role
+from .models import Profile, PortfolioProject, Role, Comment
 
 
 class ProfileForm(forms.ModelForm):
