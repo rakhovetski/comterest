@@ -41,16 +41,17 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    roles_by_profile = RoleSerializer(many=True)
 
     class Meta:
         model = Profile
-        fields = ['user', 'experience']
+        fields = ['user', 'experience', 'roles_by_profile']
 
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['title', 'description', 'formatted_date']
+        fields = ['id', 'title', 'description', 'formatted_date']
 
 
 class TeamDetailSerializer(serializers.ModelSerializer):

@@ -7,6 +7,7 @@ from rest_framework.filters import OrderingFilter
 from account.models import Role, Profile, PortfolioProject
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from django.contrib.auth.models import User
 
@@ -51,25 +52,38 @@ class RoleUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PortfolioProjectListView(generics.ListAPIView):
-    queryset = PortfolioProject.objects.all()
     serializer_class = PortfolioProjectSerializer
     filter_backends = [OrderingFilter]
     ordering_fields = ['id', 'title', 'created_at']
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = PortfolioProject.objects.all()
+        role_id = self.request.query_params.get('role')
+        if role_id is not None:
+            role = get_object_or_404(Role, pk=role_id)
+            queryset = queryset.filter(role=role)
+        return queryset
+
 
 class PortfolioProjectDetailView(generics.RetrieveAPIView):
     queryset = PortfolioProject.objects.all()
     serializer_class = PortfolioProjectDetailSerializer
-    permission_classes = [IsAdminUser | IsOwnerOrNothing]
+    permission_classes = [IsAdminOrReadOnly | IsOwnerOrNothing]
 
 
 class TeamListView(generics.ListAPIView):
-    queryset = Team.objects.filter(is_active=True)
     serializer_class = TeamSerializer
     filter_backends = [OrderingFilter]
     ordering_fields = ['id', 'title']
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Team.objects.filter(is_active=True)
+        role_id = self.request.query_params.get('role')
+        if role_id is not None:
+            queryset = queryset.filter(role_id=role_id)
+        return queryset
 
 
 class TeamDetailView(mixins.DestroyModelMixin,
@@ -98,12 +112,18 @@ class ProfileListPagination(PageNumberPagination):
 
 
 class ProfileListView(generics.ListAPIView):
-    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAdminUser | IsAuthenticated]
     filter_backends = [OrderingFilter]
     ordering_fields = ['id', 'last_name', 'username']
     pagination_class = ProfileListPagination
+
+    def get_queryset(self):
+        queryset = Profile.objects.all()
+        experience = self.request.query_params.get('experience')
+        if experience is not None:
+            queryset = queryset.filter(experience__gte=experience)
+        return queryset
 
 
 class ProfileDetailView(mixins.DestroyModelMixin,
