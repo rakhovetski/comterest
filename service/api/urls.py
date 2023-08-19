@@ -14,7 +14,7 @@ router.register(r'teams', TeamDetailView, basename='team')
 
 
 urlpatterns = [
-    path('roles/', RoleListView.as_view()),
+    path('roles/', RoleListView.as_view(), name='roles'),
     path('roles/<int:pk>/', RoleUpdateDestroyView.as_view()),
     path('users/', UserListView.as_view()),
     path('users/<int:pk>/', UserUpdateDeleteView.as_view()),

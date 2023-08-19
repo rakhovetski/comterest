@@ -19,7 +19,6 @@
 
       <div class="col-md-8">
           </br>
-          </br>
         <div class="card-body">
 
           <h5 class="card-title">@{{ profile.user.username }}</h5>
@@ -41,6 +40,11 @@
         <p>
             <a class="btn btn-dark" href="{% url 'account:edit_user' %}">Edit Profile</a>
         </p>
+                <p>
+                    {% if request.user.id == profile.user.id %}
+        <a href="{% url 'account:password_change' %}">Change Password</a>
+    {% endif %}
+                </p>
     {% endif %}
     </form>
         </div>
@@ -145,12 +149,6 @@
         <br/>
 
     <br/>
-
-
-
-    {% if request.user.id == profile.user.id %}
-        <a href="{% url 'account:password_change' %}">Change Password</a>
-    {% endif %}
       </div>
     </div>
   </div>

@@ -21,7 +21,7 @@ def profile_list(request, filter_slug=None):
     paginator = Paginator(profiles, 7)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'search/profiles_list.html', {'page_obj': page_obj})
+    return render(request, 'search/profile_list.html', {'page_obj': page_obj})
 
 
 def team_list(request, pk=None):
