@@ -24,17 +24,19 @@
             <div class="mb-3">
                 <input type="password" name="password" class="form-control" placeholder="Enter Your Password">
             </div>
+            <div>
+            <p> If You Forgot Your Password, You Can
+            <a href="{% url 'account:password_reset' %}"> Reset Password</a>
+            </p>
+        </div>
             <div class="mb-3">
                 <button type="submit" class="btn btn-dark">Submit</button>
             </div>
         </form>
 
         <p>If You Don't Have An Account
-            You can <a href="{% url 'account:register' %}">Sign up</a>
+            You can <a href="{% url 'account:register' %}"> Sign up</a>
         </p>
-        <div>
-            <a href="{% url 'account:password_reset' %}">Reset Password</a>
-        </div>
     </div>
 
 {% endblock %}
