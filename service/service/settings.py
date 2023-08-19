@@ -24,6 +24,11 @@ SECRET_KEY = 'django-insecure-7o*aissj2v&+l+r%-$v5^&=ta_d3d=*bmfhkf9hr905zsq=ghh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+if DEBUG:
+    EMAIL_HOST_USER = 'hello_world@gmail.com'
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -179,7 +184,3 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = ''
 
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
-
-
-EMAIL_HOST_USER = 'hello_world@gmail.com'
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

@@ -149,7 +149,7 @@
 
 
     {% if request.user.id == profile.user.id %}
-
+        <a href="{% url 'account:password_change' %}">Change Password</a>
     {% endif %}
       </div>
     </div>

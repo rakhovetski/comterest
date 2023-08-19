@@ -32,6 +32,9 @@
         <p>If You Don't Have An Account
             You can <a href="{% url 'account:register' %}">Sign up</a>
         </p>
+        <div>
+            <a href="{% url 'account:password_reset' %}">Reset Password</a>
+        </div>
     </div>
 
 {% endblock %}
